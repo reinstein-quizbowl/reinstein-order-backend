@@ -129,7 +129,7 @@ create table invoice_line (
 );
 
 create or replace view packet_exposure as (
-    select cp.assigned_packet_id as packet_id, cs.school_id, 'Conference: ' || c.name as source, cp.booking_conference_id as source_id, b.id as booking_id
+    select cp.assigned_packet_id as packet_id, cs.school_id, 'Conference: ' || c.name as source, cp.booking_conference_id as source_id, b.id as booking_id, b.name as orderer_name
     from booking_conference_packet cp
         join booking_conference c on cp.booking_conference_id = c.id
         join booking_conference_school cs on cs.booking_conference_id = c.id
@@ -138,7 +138,7 @@ create or replace view packet_exposure as (
 
     union all
 
-    select g.assigned_packet_id as packet_id, gs.school_id, 'Non-Conference Game' as source, g.id as source_id, b.id as booking_id
+    select g.assigned_packet_id as packet_id, gs.school_id, 'Non-Conference Game' as source, g.id as source_id, b.id as booking_id, b.name as orderer_name
     from non_conference_game_school gs
         join non_conference_game g on gs.non_conference_game_id = g.id
         join booking b on g.booking_id = b.id
@@ -146,7 +146,7 @@ create or replace view packet_exposure as (
 
     union all
 
-    select po.packet_id, b.school_id, 'Practice Order' as source, b.id as source_id, b.id as booking_id
+    select po.packet_id, b.school_id, 'Practice Order' as source, b.id as source_id, b.id as booking_id, b.name as orderer_name
     from booking_practice_packet_order po
         join booking b on po.booking_id = b.id
     where b.booking_status_code in (select code from booking_status where assume_packet_exposure = true)
