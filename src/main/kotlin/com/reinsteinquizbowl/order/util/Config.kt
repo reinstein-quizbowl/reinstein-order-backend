@@ -1,8 +1,5 @@
 package com.reinsteinquizbowl.order.util
 
-import java.time.LocalDate
-import java.time.ZoneId
-
 // This object exists mostly to provide a centralized place documenting what environment variables are required.
 @Suppress("UnusedPrivateProperty")
 object Config {
