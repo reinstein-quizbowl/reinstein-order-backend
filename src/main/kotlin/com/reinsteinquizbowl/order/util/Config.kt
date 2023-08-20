@@ -6,7 +6,8 @@ import java.time.ZoneId
 // This object exists mostly to provide a centralized place documenting what environment variables are required.
 @Suppress("UnusedPrivateProperty")
 object Config {
-    // These three aren't used in code, just in Spring configuration; they're listed here as a reminder to set them.
+    // The ones in this group aren't used in code, just in Spring configuration; they're listed here as a reminder to set them.
+    private val SERVER_PORT = System.getenv("REINSTEIN_SERVER_PORT")
     private val DB_URL = System.getenv("REINSTEIN_DB_URL")
     private val DB_USERNAME = System.getenv("REINSTEIN_DB_USERNAME")
     private val DB_PASSWORD = System.getenv("REINSTEIN_DB_PASSWORD")
