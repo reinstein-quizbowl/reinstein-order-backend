@@ -37,7 +37,7 @@ dependencies {
 detekt {
 	buildUponDefaultConfig = true // preconfigure defaults
 	allRules = false // activate all available (even unstable) rules.
- 	config.setFrom("config/detekt/detekt.yml")
+	config.setFrom("config/detekt/detekt.yml")
 }
 
 tasks.withType<KotlinCompile> {
