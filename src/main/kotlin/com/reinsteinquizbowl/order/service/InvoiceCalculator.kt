@@ -60,6 +60,10 @@ class InvoiceCalculator {
         val practicePacketOrders = bookingPracticePacketOrderRepo.findByBookingId(booking.id!!)
             .sortedWith(BookingPracticePacketOrder.YEAR_AND_NUMBER_COMPARATOR)
         for (practicePacketOrder in practicePacketOrders) {
+            /* FIXME: This needs to look at year.maximumPacketPracticeMaterialPrice and apply that if necessary.
+             * We could implement that by reducing each item's price, adding a credit-back for the difference, or maybe in other ways.
+             * Off the top of my head, I think the credit-back way is probably easier, but I'm not certain of that.
+             */
             lines.add(calculatePracticePacketLine(practicePacketOrder))
         }
 
