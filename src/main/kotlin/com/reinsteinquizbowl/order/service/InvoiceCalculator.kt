@@ -58,7 +58,7 @@ class InvoiceCalculator {
         }
 
         val practicePacketOrders = bookingPracticePacketOrderRepo.findByBookingId(booking.id!!)
-            .sortedWith(compareBy({ it.packet!!.yearCode }, { it.packet!!.number }))
+            .sortedWith(BookingPracticePacketOrder.YEAR_AND_NUMBER_COMPARATOR)
         for (practicePacketOrder in practicePacketOrders) {
             lines.add(calculatePracticePacketLine(practicePacketOrder))
         }

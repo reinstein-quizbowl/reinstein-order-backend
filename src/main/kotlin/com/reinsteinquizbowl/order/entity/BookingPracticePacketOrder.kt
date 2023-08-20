@@ -11,4 +11,8 @@ data class BookingPracticePacketOrder(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
     var bookingId: Long? = null,
     @ManyToOne var packet: Packet? = null,
-)
+) {
+    companion object {
+        val YEAR_AND_NUMBER_COMPARATOR = compareBy<BookingPracticePacketOrder>({ it.packet!!.yearCode }, { it.packet!!.number })
+    }
+}
