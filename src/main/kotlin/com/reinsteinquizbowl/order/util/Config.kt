@@ -8,7 +8,6 @@ object Config {
     private val DB_URL = System.getenv("REINSTEIN_DB_URL")
     private val DB_USERNAME = System.getenv("REINSTEIN_DB_USERNAME")
     private val DB_PASSWORD = System.getenv("REINSTEIN_DB_PASSWORD")
-    private val DB_CATALOG = System.getenv("REINSTEIN_DB_CATALOG")
 
     val SENDGRID_API_KEY = System.getenv("REINSTEIN_SENDGRID_API_KEY")
     val UI_PREFIX = System.getenv("REINSTEIN_QUIZBOWL_UI_PREFIX")
