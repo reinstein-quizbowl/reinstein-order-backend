@@ -28,6 +28,7 @@ class SendgridAdapter {
 
         if (cc != null) {
             val personalization = Personalization()
+            personalization.addTo(to.toSendgridEmail())
             personalization.addCc(cc.toSendgridEmail())
             mail.addPersonalization(personalization)
         }
