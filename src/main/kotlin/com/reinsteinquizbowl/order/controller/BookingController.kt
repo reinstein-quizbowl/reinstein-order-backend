@@ -8,6 +8,7 @@ import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.InvoiceCalculator
+import com.reinsteinquizbowl.order.util.Config
 import com.reinsteinquizbowl.order.util.EmailAddress
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
@@ -89,12 +90,16 @@ class BookingController {
 
         val confirmationBody = service.buildConfirmationEmailBody(entity)
 
+        val to = EmailAddress(Config.SUBMISSION_EMAIL_TO, Config.SUBMISSION_EMAIL_TO_DESCRIPTION)
+        val cc = Config.SUBMISSION_EMAIL_CC.takeIf { !it.isNullOrBlank() }?.let { EmailAddress(it, Config.SUBMISSION_EMAIL_CC_DESCRIPTION) }
+
         @Suppress("TooGenericExceptionCaught")
         try {
             sendgrid.sendHtmlEmail(
                 from = SUBMISSION_NOTIFICATION_EMAIL_FROM,
-                to = SUBMISSION_NOTIFICATION_EMAIL_TO,
-                subject = "Reinstein QuizBowl order from ${entity.name} (${entity.school!!.shortName})",
+                to = to,
+                cc = cc,
+                subject = "Order from ${entity.name} (${entity.school!!.shortName})",
                 bodyHtml = confirmationBody,
             )
         } catch (ex: RuntimeException) {
@@ -107,6 +112,5 @@ class BookingController {
 
     companion object {
         private val SUBMISSION_NOTIFICATION_EMAIL_FROM = EmailAddress("jonah@jonahgreenthal.com", "Reinstein QuizBowl")
-        private val SUBMISSION_NOTIFICATION_EMAIL_TO = EmailAddress("jonah@jonahgreenthal.com", "David Reinstein") // TODO change to Reinstein's email address after testing
     }
 }

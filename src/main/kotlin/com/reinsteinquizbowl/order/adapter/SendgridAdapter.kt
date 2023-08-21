@@ -8,6 +8,7 @@ import com.sendgrid.SendGrid
 import com.sendgrid.helpers.mail.Mail
 import com.sendgrid.helpers.mail.objects.Content
 import com.sendgrid.helpers.mail.objects.Email
+import com.sendgrid.helpers.mail.objects.Personalization
 import org.springframework.stereotype.Service
 
 @Service
@@ -19,10 +20,18 @@ class SendgridAdapter {
     fun sendHtmlEmail(
         from: EmailAddress,
         to: EmailAddress,
+        cc: EmailAddress? = null,
         subject: String,
         bodyHtml: String,
     ) {
         val mail = Mail(from.toSendgridEmail(), subject, to.toSendgridEmail(), Content("text/html", bodyHtml))
+
+        if (cc != null) {
+            val personalization = Personalization()
+            personalization.addCc(cc.toSendgridEmail())
+            mail.addPersonalization(personalization)
+        }
+
         val sg = SendGrid(Config.SENDGRID_API_KEY)
         val request = Request()
         try {
