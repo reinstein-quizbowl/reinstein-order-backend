@@ -1,6 +1,6 @@
 package com.reinsteinquizbowl.order.util
 
-// This object exists mostly to provide a centralized place documenting what environment variables are required.
+// This object exists mostly to provide a centralized place documenting what environment variables are required, but it also contains some non-environment variables.
 @Suppress("UnusedPrivateProperty")
 object Config {
     // The ones in this group aren't used in code, just in Spring configuration; they're listed here as a reminder to set them.
@@ -16,4 +16,6 @@ object Config {
     val SUBMISSION_EMAIL_TO_DESCRIPTION = System.getenv("REINSTEIN_SUBMISSION_EMAIL_TO_DESCRIPTION")
     val SUBMISSION_EMAIL_CC: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC")
     val SUBMISSION_EMAIL_CC_DESCRIPTION: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC_DESCRIPTION")
+
+    val FROM_ADDRESS = EmailAddress(address = "david@reinsteinquizbowl.com", description = "David Reinstein")
 }

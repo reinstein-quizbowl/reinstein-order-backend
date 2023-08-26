@@ -95,7 +95,7 @@ class BookingController {
         @Suppress("TooGenericExceptionCaught")
         try {
             sendgrid.sendHtmlEmail(
-                from = SUBMISSION_NOTIFICATION_EMAIL_FROM,
+                from = Config.FROM_ADDRESS,
                 to = to,
                 cc = cc,
                 subject = "Order from ${entity.name} (${entity.school!!.shortName})",
@@ -107,9 +107,5 @@ class BookingController {
         }
 
         return convert.toApi(entity)
-    }
-
-    companion object {
-        private val SUBMISSION_NOTIFICATION_EMAIL_FROM = EmailAddress("jonah@jonahgreenthal.com", "Reinstein QuizBowl")
     }
 }
