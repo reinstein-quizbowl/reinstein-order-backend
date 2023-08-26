@@ -31,6 +31,15 @@ class InvoiceCalculator {
     @Autowired private lateinit var nonConferenceGameSchoolRepo: NonConferenceGameSchoolRepository
     @Autowired private lateinit var invoiceLineRepo: InvoiceLineRepository
 
+    fun determineInvoiceLabel(booking: Booking): String {
+        val schoolId = booking.school!!.id!!
+
+        val bookingsWithLowerId = repo.countLowerIdBookingsForSchoolId(schoolId, booking.id!!)
+        val thisBookingSequence = bookingsWithLowerId + 1
+
+        return "$schoolId-$thisBookingSequence"
+    }
+
     @Suppress("MagicNumber")
     private fun calculateCostForPacket(schoolsExposed: Long): BigDecimal = when (schoolsExposed) {
         0L -> BigDecimal("0.00")

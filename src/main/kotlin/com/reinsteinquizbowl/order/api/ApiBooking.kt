@@ -10,6 +10,7 @@ data class ApiBooking(
     var name: String? = null,
     var emailAddress: String? = null,
     var authority: String? = null,
+    var invoiceLabel: String? = null,
     var cost: BigDecimal? = null,
     var statusCode: String? = null,
     var shipDate: LocalDate? = null,

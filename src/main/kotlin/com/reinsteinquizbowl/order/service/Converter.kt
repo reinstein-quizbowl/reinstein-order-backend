@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service
 @Service
 class Converter {
     @Autowired private lateinit var bookingConferenceRepo: BookingConferenceRepository
+    @Autowired private lateinit var invoiceCalculator: InvoiceCalculator
     @Autowired private lateinit var bookingConferencePacketRepository: BookingConferencePacketRepository
     @Autowired private lateinit var bookingConferenceSchoolRepo: BookingConferenceSchoolRepository
     @Autowired private lateinit var bookingPracticePacketOrderRepo: BookingPracticePacketOrderRepository
@@ -52,6 +53,7 @@ class Converter {
             name = entity.name,
             emailAddress = entity.emailAddress,
             authority = entity.authority,
+            invoiceLabel = if (invoiceLines.isEmpty()) null else invoiceCalculator.determineInvoiceLabel(entity),
             cost = if (invoiceLines.isEmpty()) null else invoiceLines.sumOf(InvoiceLine::getTotalCost),
             statusCode = entity.status?.code,
             shipDate = entity.shipDate,
