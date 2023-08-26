@@ -119,7 +119,7 @@ create table invoice_line (
     id serial primary key,
     booking_id int not null references booking,
     item_type text null,
-    item_id int null,
+    item_id text null,
     label text not null,
     quantity int not null default 1,
     unit_cost numeric(8, 2) null,

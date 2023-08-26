@@ -6,7 +6,7 @@ data class ApiInvoiceLine(
     var id: Long? = null,
     var bookingId: Long? = null,
     var itemType: String? = null,
-    var itemId: Long? = null,
+    var itemId: String? = null,
     var label: String? = null,
     var quantity: Int? = null,
     var unitCost: BigDecimal? = null,
