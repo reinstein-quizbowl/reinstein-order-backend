@@ -2,6 +2,7 @@ package com.reinsteinquizbowl.order.controller
 
 import com.reinsteinquizbowl.order.adapter.SendgridAdapter
 import com.reinsteinquizbowl.order.api.ApiBooking
+import com.reinsteinquizbowl.order.entity.Booking
 import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.BookingStatusRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
@@ -87,7 +88,14 @@ class BookingController {
         entity.status = statusRepo.findByIdOrNull(ApiBooking.BookingStatus.SUBMITTED)!!
         repo.save(entity)
 
-        val confirmationBody = service.buildConfirmationEmailBody(entity)
+        sendInternalConfirmationEmail(entity)
+        sendExternalConfirmationEmail(entity)
+
+        return convert.toApi(entity)
+    }
+
+    private fun sendInternalConfirmationEmail(booking: Booking) {
+        val body = service.buildInternalConfirmationEmailBody(booking)
 
         val to = EmailAddress(Config.SUBMISSION_EMAIL_TO, Config.SUBMISSION_EMAIL_TO_DESCRIPTION)
         val cc = Config.SUBMISSION_EMAIL_CC.takeIf { !it.isNullOrBlank() }?.let { EmailAddress(it, Config.SUBMISSION_EMAIL_CC_DESCRIPTION) }
@@ -97,15 +105,39 @@ class BookingController {
             sendgrid.sendHtmlEmail(
                 from = Config.FROM_ADDRESS,
                 to = to,
-                cc = cc,
-                subject = "Order from ${entity.name} (${entity.school!!.shortName})",
-                bodyHtml = confirmationBody,
+                cc = listOfNotNull(cc),
+                subject = "Order from ${booking.name} (${booking.school!!.shortName})",
+                bodyHtml = body,
             )
         } catch (ex: RuntimeException) {
-            System.err.println("Couldn't send a confirmation email from booking ${entity.id}: ${ex.message}\n${ex.stackTraceToString()}")
+            System.err.println("Couldn't send internal confirmation email from booking ${booking.id}: ${ex.message}\n${ex.stackTraceToString()}")
             // but we don't want the transaction rolled back or anything
         }
+    }
 
-        return convert.toApi(entity)
+    private fun sendExternalConfirmationEmail(booking: Booking) {
+        if (booking.emailAddress.isNullOrBlank()) {
+            System.err.println("No email address for booking ${booking.id}; can't send an external confirmation email")
+            return
+        }
+
+        val internalConfirmationBody = service.buildExternalConfirmationEmailBody(booking)
+
+        val internalRecipient = EmailAddress(Config.SUBMISSION_EMAIL_TO, Config.SUBMISSION_EMAIL_TO_DESCRIPTION)
+        val cc = Config.SUBMISSION_EMAIL_CC.takeIf { !it.isNullOrBlank() }?.let { EmailAddress(it, Config.SUBMISSION_EMAIL_CC_DESCRIPTION) }
+
+        @Suppress("TooGenericExceptionCaught")
+        try {
+            sendgrid.sendHtmlEmail(
+                from = Config.FROM_ADDRESS,
+                to = EmailAddress(address = booking.emailAddress!!, description = booking.name),
+                cc = listOfNotNull(internalRecipient, cc),
+                subject = "Your Order with Reinstein QuizBowl",
+                bodyHtml = internalConfirmationBody,
+            )
+        } catch (ex: RuntimeException) {
+            System.err.println("Couldn't send external confirmation email from booking ${booking.id}: ${ex.message}\n${ex.stackTraceToString()}")
+            // but we don't want the transaction rolled back or anything
+        }
     }
 }

@@ -43,7 +43,7 @@ class BookingService {
 
     fun refetch(booking: Booking) = repo.findByIdOrNull(booking.id!!)!!
 
-    fun buildConfirmationEmailBody(booking: Booking): String {
+    fun buildInternalConfirmationEmailBody(booking: Booking): String {
         // This is cheating, but the API converter gathers so much useful information it's easier to start from that
         val api = convert.toApi(booking)
 
@@ -115,8 +115,29 @@ class BookingService {
         return body.toString()
     }
 
+    fun buildExternalConfirmationEmailBody(booking: Booking): String {
+        // This is cheating, but the API converter gathers so much useful information it's easier to start from that
+        val api = convert.toApi(booking)
+
+        val costDescription = api.cost?.let(CURRENCY_FORMATTER::format) ?: "TBD" // fallback shouldn't happen
+
+        val body = """
+            <p>Thank you for the order you placed with Reinstein QuizBowl on behalf of ${booking.school!!.name!!}!</p>
+            <p>Your order number is ${api.invoiceLabel}, and your total is $costDescription.</p>
+            <p>
+                Please send a check made out to Reinstein QuizBowl to&hellip;
+                Reinstein QuizBowl<br />
+                PO Box 57<br />
+                125 Schelter Rd<br />
+                Lincolnshire, IL 60069&ndash;0057
+            </p>
+            <p><a href="${Config.UI_PREFIX}/order/${booking.creationId}/invoice">View Invoice</a></p>
+        """.trimIndent()
+
+        return body
+    }
+
     companion object {
-        val DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
         val CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US)
     }
 }
