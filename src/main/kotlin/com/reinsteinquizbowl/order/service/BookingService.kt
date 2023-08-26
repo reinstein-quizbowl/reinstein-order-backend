@@ -56,25 +56,24 @@ class BookingService {
         )
 
         api.conference?.let { conference ->
-            val packetsPluralized =
-                if (conference.packetsRequested == 1) "packet"
-                else "packets"
+            val packetsPluralized = if (conference.packetsRequested == 1) "packet" else "packets"
             val packetsDescription =
-                if (conference.assignedPackets?.isEmpty() == true) "not assigned yet"
-                else Util.makeEnglishList(conference.assignedPackets!!.sortedBy { it.number }.map { it.number.toString() })
+                if (conference.assignedPackets?.isEmpty() == true) {
+                    "not assigned yet"
+                } else {
+                    Util.makeEnglishList(conference.assignedPackets!!.sortedBy { it.number }.map { it.number.toString() })
+                }
             data.add("Conference" to "${conference.name}: ${conference.packetsRequested} $packetsPluralized: $packetsDescription")
 
             val schoolNames = bookingConferenceSchoolRepo.findByBookingConferenceId(conference.id!!)
-                .map{ it.school!!.shortName!! }
+                .map { it.school!!.shortName!! }
                 .sorted()
             data.add("Schools in conference" to Util.makeEnglishList(schoolNames))
         }
 
         api.nonConferenceGames?.let { nonConferenceGames -> // in practice, this will always be non-null, but it could be empty
             for (game in nonConferenceGames) {
-                val packetDescription =
-                    if (game.assignedPacket == null) "not assigned yet"
-                    else game.assignedPacket!!.number.toString()
+                val packetDescription = if (game.assignedPacket == null) "not assigned yet" else game.assignedPacket!!.number.toString()
                 val schoolShortNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
                     .map { it.school!!.shortName!! }
                     .sorted()
