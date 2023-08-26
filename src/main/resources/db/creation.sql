@@ -29,7 +29,7 @@ create table compilation (
 create table school (
     id serial primary key,
     name text not null,
-    short_name text not null,
+    short_name text not null unique, -- I'm not sure about the long-term wisdom of this unique constraint, but at least for now, it seems like a good idea since short_names are basically "IESA name or a constructed analogue"
     address text not null,
     city text not null,
     state text not null,
@@ -39,7 +39,7 @@ create table school (
     longitude numeric(8, 4) null,
     active boolean not null default true,
     coop boolean not null default false,
-    iesa_id text null,
+    iesa_id text null unique, -- Postgres properly implements the SQL standard's allowance of multiple nulls in a unique column
     note text null
 );
 
