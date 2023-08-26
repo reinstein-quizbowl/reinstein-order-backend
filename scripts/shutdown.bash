@@ -6,6 +6,6 @@ if [ -z "${pid}" ]; then
     echo "$REINSTEIN_APP_NAME is not running"
 else
     echo "Killing process $pid"
-    kill -9 $pid
+    kill $pid
     echo "Shut down $REINSTEIN_APP_NAME"
 fi
