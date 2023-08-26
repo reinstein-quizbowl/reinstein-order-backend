@@ -93,7 +93,6 @@ create table booking_conference_packet (
 create table non_conference_game (
     id serial primary key,
     booking_id int not null references booking,
-    date date null,
     assigned_packet_id int null references packet
 );
 

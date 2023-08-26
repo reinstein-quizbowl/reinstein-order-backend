@@ -15,6 +15,7 @@ import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.InvoiceLineRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameSchoolRepository
+import com.reinsteinquizbowl.order.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
@@ -61,7 +62,7 @@ class InvoiceCalculator {
 
         val games = nonConferenceGameRepo.findByBookingId(booking.id!!)
             .filter { it.assignedPacket != null }
-            .sortedBy { it.date }
+            .sortedBy { it.id }
         for (game in games) {
             lines.add(calculateNonConferenceGameLine(game))
         }
@@ -108,11 +109,14 @@ class InvoiceCalculator {
 
     private fun calculateNonConferenceGameLine(game: NonConferenceGame): InvoiceLine {
         val packet = game.assignedPacket!!
+        val schoolNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
+            .map { it.school!!.shortName!! }
+
         return InvoiceLine(
             bookingId = null,
             itemType = "Non-conference game packet",
             itemId = packet.id,
-            label = "Packet ${packet.number} from ${packet.yearCode} for non-conference use",
+            label = "Packet ${packet.number} from ${packet.yearCode} for the non-conference game involving ${Util.makeEnglishList(schoolNames)}",
             quantity = 1,
             unitCost = calculateCostForPacket(nonConferenceGameSchoolRepo.countByNonConferenceGameId(game.id!!)),
         )

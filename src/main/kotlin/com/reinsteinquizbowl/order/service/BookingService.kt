@@ -77,7 +77,7 @@ class BookingService {
                 val schoolShortNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
                     .map { it.school!!.shortName!! }
                     .sorted()
-                data.add("Non-conference game (${game.date?.format(DATE_FORMATTER)})" to "${Util.makeEnglishList(schoolShortNames)} (packet $packetDescription)")
+                data.add("Non-conference game (${Util.makeEnglishList(schoolShortNames)})" to "(packet $packetDescription)")
             }
         }
 

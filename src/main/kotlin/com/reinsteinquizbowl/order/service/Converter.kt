@@ -118,7 +118,6 @@ class Converter {
     fun toApi(entity: NonConferenceGame) = ApiNonConferenceGame(
         id = entity.id,
         bookingId = entity.bookingId,
-        date = entity.date,
         schoolIds = nonConferenceGameSchoolRepo.findSchoolIdsByNonConferenceGameId(entity.id!!),
         assignedPacket = entity.assignedPacket?.let { toApi(it) },
     )

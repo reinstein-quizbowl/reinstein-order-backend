@@ -11,6 +11,5 @@ import java.time.LocalDate
 data class NonConferenceGame(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null,
     var bookingId: Long? = null,
-    var date: LocalDate? = null,
     @ManyToOne var assignedPacket: Packet? = null,
 )

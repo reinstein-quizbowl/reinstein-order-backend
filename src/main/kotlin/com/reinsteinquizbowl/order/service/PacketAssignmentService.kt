@@ -40,7 +40,6 @@ class PacketAssignmentService {
                     ApiPacketAssignment(
                         type = ApiPacketAssignment.Type.CONFERENCE,
                         id = conference.id!!,
-                        date = LocalDate.MIN,
                         sequence = i,
                         description = "conference packet #$i",
                         schoolIds = schoolIds,
@@ -57,8 +56,7 @@ class PacketAssignmentService {
             val schoolsById: Map<Long, School> = gameSchools.associateBy({ it.school!!.id!! }, { it.school!! })
             val schoolIdsByGameId: Map<Long, List<Long>> = gameSchools.groupBy(keySelector = { it.nonConferenceGame!!.id!! }, valueTransform = { it.school!!.id!! })
 
-            for (i in nonConferenceGames.indices) {
-                val game = nonConferenceGames[i]
+            for (game in nonConferenceGames) {
                 val schoolIds = schoolIdsByGameId[game.id!!]!!
                 val schoolNames: List<String> = schoolIds.mapNotNull { schoolsById[it] }.mapNotNull(School::shortName)
 
@@ -66,9 +64,8 @@ class PacketAssignmentService {
                     ApiPacketAssignment(
                         type = ApiPacketAssignment.Type.NON_CONFERENCE_GAME,
                         id = game.id!!,
-                        date = game.date!!,
-                        sequence = i,
-                        description = "the non-conference game on ${game.date!!.format(DATE_FORMATTER)} (${Util.makeEnglishList(schoolNames)})",
+                        sequence = needs.size + 1,
+                        description = "the non-conference game involving ${Util.makeEnglishList(schoolNames)}",
                         schoolIds = schoolIds,
                     )
                 )
@@ -93,8 +90,7 @@ class PacketAssignmentService {
 
         val gameAssignmentPriorityOrder: Comparator<ApiPacketAssignment> =
             compareBy<ApiPacketAssignment> { findPacketIdsAvailableFor(it.schoolIds, availablePacketIdsBySchoolId).size } // if fewer packets available, assign sooner
-                .thenBy { it.date } // then earlier games first (conference games have already been marked as early as possible)
-                .thenBy { it.sequence } // to try to keep conference games in order
+                .thenBy { it.sequence } // conference before non-conference; try to keep conference games in order
                 .thenBy { it.hashCode() } // to make the sort, and thus the whole operation, deterministic
 
         val unseen = needs.toMutableList()
@@ -199,11 +195,8 @@ class PacketAssignmentService {
 
         val ASSIGNMENT_DISPLAY_COMPARATOR: Comparator<ApiPacketAssignment> =
             compareBy<ApiPacketAssignment> { it.type } // which will put conference first
-                .thenBy { it.date }
                 .thenBy { it.sequence }
                 .thenBy { it.hashCode() } // stable
-
-        val DATE_FORMATTER = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)
 
         private val UNDERSTOOD_TYPES = setOf(ApiPacketAssignment.Type.CONFERENCE, ApiPacketAssignment.Type.NON_CONFERENCE_GAME)
     }

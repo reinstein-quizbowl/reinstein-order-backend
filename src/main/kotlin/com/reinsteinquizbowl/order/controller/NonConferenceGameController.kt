@@ -43,8 +43,6 @@ class NonConferenceGameController {
         val booking = bookingService.findThenAuthorize(bookingCreationId)
 
         for (gameInput in input) {
-            gameInput.date ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Date is required")
-
             val schoolIds = gameInput.schoolIds
             if (schoolIds.isNullOrEmpty() || schoolIds.size < 2) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Specify at least two schools")
             val schools = schoolRepo.findByIdIn(schoolIds)
@@ -53,7 +51,6 @@ class NonConferenceGameController {
             val game = repo.save(
                 NonConferenceGame(
                     bookingId = booking.id,
-                    date = gameInput.date
                 )
             )
 
@@ -79,8 +76,6 @@ class NonConferenceGameController {
         @RequestBody input: ApiNonConferenceGame,
     ): ApiNonConferenceGame {
         val (_, game) = findAndAuthorize(bookingCreationId, gameId)
-
-        game.date = input.date ?: game.date
 
         // FIXME authorize more
         // THINK: should we sanity-check the packet authorization?
