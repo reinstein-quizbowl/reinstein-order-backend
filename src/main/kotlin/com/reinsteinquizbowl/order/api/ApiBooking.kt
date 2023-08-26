@@ -21,6 +21,7 @@ data class ApiBooking(
 
     var conference: ApiBookingConference? = null, // the data model supports multiple conferences per order, but the API layer doesn't for now because we don't anticipate needing it
     var nonConferenceGames: List<ApiNonConferenceGame>? = null,
+    var stateSeriesOrders: List<ApiBookingPracticeStateSeriesOrder>? = null,
     var packetOrders: List<ApiBookingPracticePacketOrder>? = null,
     var compilationOrders: List<ApiBookingPracticeCompilationOrder>? = null,
     var invoiceLines: List<ApiInvoiceLine>? = null,

@@ -7,6 +7,10 @@ insert into year
 ('2024', '2023–2024', '2023-08-01', '2024-08-01', '2023-12-15',            null),
 ('2025', '2024–2025', '2024-08-01', '2025-08-01', '2024-12-15',            null);
 
+insert into state_series
+(name,                       description, price, available, sequence) values
+('2023 IESA State Series',   null,        75.00, true,      -2023);
+
 insert into packet
 (year_code, number, available_for_competition, price_as_practice_material) values
 ('2020',    1,      false,                     5.00),

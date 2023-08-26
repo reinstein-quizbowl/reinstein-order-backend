@@ -4,6 +4,7 @@ import com.reinsteinquizbowl.order.entity.Booking
 import com.reinsteinquizbowl.order.entity.BookingConference
 import com.reinsteinquizbowl.order.entity.BookingPracticeCompilationOrder
 import com.reinsteinquizbowl.order.entity.BookingPracticePacketOrder
+import com.reinsteinquizbowl.order.entity.BookingPracticeStateSeriesOrder
 import com.reinsteinquizbowl.order.entity.InvoiceLine
 import com.reinsteinquizbowl.order.entity.NonConferenceGame
 import com.reinsteinquizbowl.order.entity.Year
@@ -12,6 +13,7 @@ import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceSchoolRepository
 import com.reinsteinquizbowl.order.repository.BookingPracticeCompilationOrderRepository
 import com.reinsteinquizbowl.order.repository.BookingPracticePacketOrderRepository
+import com.reinsteinquizbowl.order.repository.BookingPracticeStateSeriesOrderRepository
 import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.InvoiceLineRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
@@ -28,6 +30,7 @@ class InvoiceCalculator {
     @Autowired private lateinit var bookingConferenceRepo: BookingConferenceRepository
     @Autowired private lateinit var bookingConferencePacketRepo: BookingConferencePacketRepository
     @Autowired private lateinit var bookingConferenceSchoolRepo: BookingConferenceSchoolRepository
+    @Autowired private lateinit var bookingPracticeStateSeriesOrderRepo: BookingPracticeStateSeriesOrderRepository
     @Autowired private lateinit var bookingPracticePacketOrderRepo: BookingPracticePacketOrderRepository
     @Autowired private lateinit var bookingPracticeCompilationOrderRepo: BookingPracticeCompilationOrderRepository
     @Autowired private lateinit var nonConferenceGameRepo: NonConferenceGameRepository
@@ -68,6 +71,12 @@ class InvoiceCalculator {
             .sortedBy { it.id }
         for (game in games) {
             lines.add(calculateNonConferenceGameLine(game))
+        }
+
+        val practiceStateSeriesOrders = bookingPracticeStateSeriesOrderRepo.findByBookingId(booking.id!!)
+            .sortedBy { it.stateSeries!!.sequence }
+        for (practiceStateSeriesOrder in practiceStateSeriesOrders) {
+            lines.add(calculatePracticeStateSeriesLine(practiceStateSeriesOrder))
         }
 
         val practicePacketOrdersByYearCode: Map<String, List<BookingPracticePacketOrder>> = bookingPracticePacketOrderRepo.findByBookingId(booking.id!!)
@@ -140,6 +149,18 @@ class InvoiceCalculator {
             label = "Packet ${packet.number} from ${packet.yearCode} for the non-conference game involving ${Util.makeEnglishList(schoolNames)}",
             quantity = 1,
             unitCost = calculateCostForPacket(nonConferenceGameSchoolRepo.countByNonConferenceGameId(game.id!!)),
+        )
+    }
+
+    private fun calculatePracticeStateSeriesLine(practiceStateSeriesOrder: BookingPracticeStateSeriesOrder): InvoiceLine {
+        val stateSeries = practiceStateSeriesOrder.stateSeries!!
+        return InvoiceLine(
+            bookingId = null,
+            itemType = "Practice State Series",
+            itemId = stateSeries.id!!.toString(),
+            label = "${stateSeries.name} for practice use",
+            quantity = 1,
+            unitCost = stateSeries.price,
         )
     }
 

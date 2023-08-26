@@ -81,6 +81,13 @@ class BookingService {
             }
         }
 
+        api.stateSeriesOrders?.takeIf { it.isNotEmpty() }?.let { stateSeriesOrders ->
+            val descriptions = stateSeriesOrders
+                .sortedWith(compareBy({ it.stateSeries!!.sequence }))
+                .map { it.stateSeries!!.name }
+            data.add("State Series" to Util.makeEnglishList(descriptions))
+        }
+
         api.packetOrders?.takeIf { it.isNotEmpty() }?.let { practicePacketOrders ->
             val descriptions = practicePacketOrders
                 .sortedWith(ApiBookingPracticePacketOrder.YEAR_AND_NUMBER_COMPARATOR)

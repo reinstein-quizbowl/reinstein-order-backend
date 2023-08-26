@@ -8,6 +8,15 @@ create table year (
     check(start_date < end_date)
 );
 
+create table state_series (
+    id serial primary key,
+    name text not null unique,
+    description text,
+    price numeric(8, 2) not null,
+    available boolean not null,
+    sequence int null
+);
+
 create table packet (
     id serial primary key,
     year_code text not null references year,
@@ -101,6 +110,12 @@ create table non_conference_game_school (
     non_conference_game_id int not null references non_conference_game,
     school_id int not null references school,
     unique(non_conference_game_id, school_id)
+);
+
+create table booking_practice_state_series_order (
+    id serial primary key,
+    booking_id int not null references booking,
+    state_series_id int not null references state_series
 );
 
 create table booking_practice_packet_order (
