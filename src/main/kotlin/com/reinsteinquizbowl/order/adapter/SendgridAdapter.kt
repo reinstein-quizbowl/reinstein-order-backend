@@ -20,16 +20,16 @@ class SendgridAdapter {
     fun sendHtmlEmail(
         from: EmailAddress,
         to: EmailAddress,
-        cc: EmailAddress? = null,
+        cc: List<EmailAddress> = emptyList(),
         subject: String,
         bodyHtml: String,
     ) {
         val mail = Mail(from.toSendgridEmail(), subject, to.toSendgridEmail(), Content("text/html", bodyHtml))
 
-        if (cc != null) {
+        if (cc.isNotEmpty()) {
             val personalization = Personalization()
             personalization.addTo(to.toSendgridEmail())
-            personalization.addCc(cc.toSendgridEmail())
+            cc.forEach { personalization.addCc(it.toSendgridEmail()) }
             mail.addPersonalization(personalization)
         }
 
