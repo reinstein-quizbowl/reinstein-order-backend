@@ -637,7 +637,6 @@ insert into school (name, short_name, address, city, state, postal_code, country
 ('Saint Anne Parish School', 'Barrington St. Anne', '319 Franklin St', 'Barrington', 'IL', '60010', 'USA', 42.155493, -88.132724, true, false, '831'),
 ('Saint Boniface Catholic School', 'Edwardsville St. Boniface', '128 N Buchanan St', 'Edwardsville', 'IL', '62025', 'USA', 38.812198, -89.953039, true, false, '1910'),
 ('Saint Dennis School', 'Lockport St. Dennis', '1201 S Washington St', 'Lockport', 'IL', '60441', 'USA', 41.593763, -88.052063, true, false, '2305'),
-('Saint Edward Catholic School', 'Chillicothe St. Edward''s', '1221 N Fifth St', 'Chillicothe', 'IL', '61523', 'USA', 40.920963, -89.48843, true, false, '116'),
 ('Saint Gilbert Catholic School', 'Grayslake St. Gilbert', '231 E Belvidere Rd', 'Grayslake', 'IL', '60030', 'USA', 42.338745, -88.004751, true, false, '2213'),
 ('Saint Mary School', 'Buffalo Grove St. Mary', '50 N Buffalo Grove Rd', 'Buffalo Grove', 'IL', '60089', 'USA', 42.154177, -87.962569, true, false, '737'),
 ('Saints Cyril & Methodius School', 'Lemont SS Cyril & Methodius', '607 Sobieski St', 'Lemont', 'IL', '60439', 'USA', 41.671024, -87.994649, true, false, '2163'),
