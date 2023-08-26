@@ -100,9 +100,7 @@ class BookingService {
             data.add("Note" to booking.externalNote)
         }
 
-        val costDescription =
-            if (booking.cost == null) "TBD" // this shouldn't happen
-            else CURRENCY_FORMATTER.format(booking.cost)
+        val costDescription = api.cost?.let(CURRENCY_FORMATTER::format) ?: "TBD" // fallback shouldn't happen
         data.add("Total cost" to costDescription)
 
         val body = StringBuilder("<p>${booking.name} has submitted a new order:</p>")

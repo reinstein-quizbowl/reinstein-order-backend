@@ -20,7 +20,6 @@ data class Booking(
     var name: String? = null,
     var emailAddress: String? = null,
     var authority: String? = null,
-    var cost: BigDecimal? = null,
     @ManyToOne @JoinColumn(name = "booking_status_code") var status: BookingStatus? = null,
     var shipDate: LocalDate? = null,
     var paymentReceivedDate: LocalDate? = null,

@@ -43,28 +43,32 @@ class Converter {
     @Autowired private lateinit var nonConferenceGameRepo: NonConferenceGameRepository
     @Autowired private lateinit var nonConferenceGameSchoolRepo: NonConferenceGameSchoolRepository
 
-    fun toApi(entity: Booking) = ApiBooking(
-        id = entity.id,
-        school = entity.school?.let { toApi(it) },
-        name = entity.name,
-        emailAddress = entity.emailAddress,
-        authority = entity.authority,
-        cost = entity.cost,
-        statusCode = entity.status?.code,
-        shipDate = entity.shipDate,
-        paymentReceivedDate = entity.paymentReceivedDate,
-        requestsW9 = entity.requestsW9,
-        externalNote = entity.externalNote,
-        internalNote = entity.internalNote, // THINK: how can we limit exposure to this?
-        conference = bookingConferenceRepo.findByBookingId(entity.id!!)?.let { toApi(it) },
-        nonConferenceGames = nonConferenceGameRepo.findByBookingId(entity.id!!).map { toApi(it) },
-        packetOrders = bookingPracticePacketOrderRepo.findByBookingId(entity.id!!).map { toApi(it) },
-        compilationOrders = bookingPracticeCompilationOrderRepo.findByBookingId(entity.id!!).map { toApi(it) },
-        invoiceLines = invoiceLineRepo.findByBookingId(entity.id!!).sortedBy { it.sequence }.map { toApi(it) },
-        createdAt = entity.createdAt,
-        creationId = entity.creationId,
-        modifiedAt = entity.modifiedAt,
-    )
+    fun toApi(entity: Booking): ApiBooking {
+        val invoiceLines = invoiceLineRepo.findByBookingId(entity.id!!)
+
+        return ApiBooking(
+            id = entity.id,
+            school = entity.school?.let { toApi(it) },
+            name = entity.name,
+            emailAddress = entity.emailAddress,
+            authority = entity.authority,
+            cost = if (invoiceLines.isEmpty()) null else invoiceLines.sumOf(InvoiceLine::getTotalCost),
+            statusCode = entity.status?.code,
+            shipDate = entity.shipDate,
+            paymentReceivedDate = entity.paymentReceivedDate,
+            requestsW9 = entity.requestsW9,
+            externalNote = entity.externalNote,
+            internalNote = entity.internalNote, // THINK: how can we limit exposure to this?
+            conference = bookingConferenceRepo.findByBookingId(entity.id!!)?.let { toApi(it) },
+            nonConferenceGames = nonConferenceGameRepo.findByBookingId(entity.id!!).map { toApi(it) },
+            packetOrders = bookingPracticePacketOrderRepo.findByBookingId(entity.id!!).map { toApi(it) },
+            compilationOrders = bookingPracticeCompilationOrderRepo.findByBookingId(entity.id!!).map { toApi(it) },
+            invoiceLines = invoiceLines.sortedBy { it.sequence }.map { toApi(it) },
+            createdAt = entity.createdAt,
+            creationId = entity.creationId,
+            modifiedAt = entity.modifiedAt,
+        )
+    }
 
     fun toApi(entity: BookingConference) = ApiBookingConference(
         id = entity.id,

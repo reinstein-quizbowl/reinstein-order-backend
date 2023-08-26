@@ -63,7 +63,6 @@ class BookingController {
         entity.externalNote = input.externalNote ?: entity.externalNote
 
         // FIXME authorize admin for these fields
-        entity.cost = input.cost ?: entity.cost
         entity.shipDate = input.shipDate ?: entity.shipDate
         entity.paymentReceivedDate = input.paymentReceivedDate ?: entity.paymentReceivedDate
         entity.internalNote = input.internalNote ?: entity.internalNote

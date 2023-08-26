@@ -140,15 +140,11 @@ class InvoiceCalculator {
         lines.forEach { it.bookingId = booking.id!! }
         invoiceLineRepo.saveAll(lines)
 
-        booking.cost = lines.sumOf(InvoiceLine::getTotalCost)
         repo.save(booking)
     }
 
     fun clear(booking: Booking) {
         val lines = invoiceLineRepo.findByBookingId(booking.id!!)
         invoiceLineRepo.deleteAll(lines)
-
-        booking.cost = null
-        repo.save(booking)
     }
 }

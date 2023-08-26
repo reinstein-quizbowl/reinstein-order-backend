@@ -57,7 +57,6 @@ create table booking (
     name text not null,
     email_address text not null,
     authority text null,
-    cost numeric(8, 2) null,
     booking_status_code text not null references booking_status,
     ship_date date null,
     payment_received_date date null,
