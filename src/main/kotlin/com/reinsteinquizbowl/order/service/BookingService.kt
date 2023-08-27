@@ -132,7 +132,7 @@ class BookingService {
             <p>Thank you for the order you placed with Reinstein QuizBowl on behalf of ${booking.school!!.name!!}!</p>
             <p>Your order number is ${api.invoiceLabel}, and your total is $costDescription.</p>
             <p>
-                Please send a check made out to Reinstein QuizBowl to&hellip;
+                Please send a check made out to Reinstein QuizBowl to&hellip;<br />
                 Reinstein QuizBowl<br />
                 PO Box 57<br />
                 125 Schelter Rd<br />
