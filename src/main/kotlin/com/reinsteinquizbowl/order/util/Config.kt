@@ -17,5 +17,5 @@ object Config {
     val SUBMISSION_EMAIL_CC: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC")
     val SUBMISSION_EMAIL_CC_DESCRIPTION: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC_DESCRIPTION")
 
-    val FROM_ADDRESS = EmailAddress(address = "david@reinsteinquizbowl.com", description = "David Reinstein")
+    val FROM_ADDRESS = EmailAddress(address = "david@reinsteinquizbowl.com", description = "Reinstein QuizBowl")
 }
