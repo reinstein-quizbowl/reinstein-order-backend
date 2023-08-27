@@ -75,7 +75,7 @@ class BookingService {
             val schoolShortNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
                 .map { it.school!!.shortName!! }
                 .sorted()
-            data.add("Non-conference game (${Util.makeEnglishList(schoolShortNames)})" to "(packet $packetDescription)")
+            data.add("Non-conference game (${Util.makeEnglishList(schoolShortNames)})" to "packet $packetDescription")
         }
 
         api.stateSeriesOrders?.takeIf { it.isNotEmpty() }?.let { stateSeriesOrders ->
