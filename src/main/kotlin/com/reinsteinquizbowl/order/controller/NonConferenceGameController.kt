@@ -85,6 +85,7 @@ class NonConferenceGameController {
     }
 
     @DeleteMapping("/bookings/{creationId}/nonConferenceGames/{gameId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(
         @PathVariable(name = "creationId") bookingCreationId: String,
         @PathVariable gameId: Long,
