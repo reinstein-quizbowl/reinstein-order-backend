@@ -12,9 +12,8 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.server.ResponseStatusException
+import java.math.BigDecimal
 import java.text.NumberFormat
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.Locale
 
 @Service
@@ -71,19 +70,17 @@ class BookingService {
             data.add("Schools in conference" to Util.makeEnglishList(schoolNames))
         }
 
-        api.nonConferenceGames?.let { nonConferenceGames -> // in practice, this will always be non-null, but it could be empty
-            for (game in nonConferenceGames) {
-                val packetDescription = if (game.assignedPacket == null) "not assigned yet" else game.assignedPacket!!.number.toString()
-                val schoolShortNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
-                    .map { it.school!!.shortName!! }
-                    .sorted()
-                data.add("Non-conference game (${Util.makeEnglishList(schoolShortNames)})" to "(packet $packetDescription)")
-            }
+        for (game in (api.nonConferenceGames ?: emptyList())) {
+            val packetDescription = if (game.assignedPacket == null) "not assigned yet" else game.assignedPacket!!.number.toString()
+            val schoolShortNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
+                .map { it.school!!.shortName!! }
+                .sorted()
+            data.add("Non-conference game (${Util.makeEnglishList(schoolShortNames)})" to "(packet $packetDescription)")
         }
 
         api.stateSeriesOrders?.takeIf { it.isNotEmpty() }?.let { stateSeriesOrders ->
             val descriptions = stateSeriesOrders
-                .sortedWith(compareBy({ it.stateSeries!!.sequence }))
+                .sortedWith(compareBy { it.stateSeries!!.sequence })
                 .map { it.stateSeries!!.name }
             data.add("State Series" to Util.makeEnglishList(descriptions))
         }
@@ -97,17 +94,14 @@ class BookingService {
 
         api.compilationOrders?.takeIf { it.isNotEmpty() }?.let { practiceCompilationOrders ->
             val descriptions = practiceCompilationOrders
-                .sortedWith(compareBy({ it.compilation!!.sequence }))
+                .sortedWith(compareBy { it.compilation!!.sequence })
                 .map { it.compilation!!.name }
             data.add("Practice compilations" to Util.makeEnglishList(descriptions))
         }
 
-        if (!booking.externalNote.isNullOrBlank()) {
-            data.add("Note" to booking.externalNote)
-        }
+        booking.externalNote.takeIf { !it.isNullOrBlank() }?.let { data.add("Note" to it) }
 
-        val costDescription = api.cost?.let(CURRENCY_FORMATTER::format) ?: "TBD" // fallback shouldn't happen
-        data.add("Total cost" to costDescription)
+        data.add("Total cost" to formatCost(api.cost))
 
         val body = StringBuilder("<p>${booking.name} has submitted a new order:</p>")
 
@@ -126,11 +120,9 @@ class BookingService {
         // This is cheating, but the API converter gathers so much useful information it's easier to start from that
         val api = convert.toApi(booking)
 
-        val costDescription = api.cost?.let(CURRENCY_FORMATTER::format) ?: "TBD" // fallback shouldn't happen
-
-        val body = """
+        return """
             <p>Thank you for the order you placed with Reinstein QuizBowl on behalf of ${booking.school!!.name!!}!</p>
-            <p>Your order number is ${api.invoiceLabel}, and your total is $costDescription.</p>
+            <p>Your order number is ${api.invoiceLabel}, and your total is ${formatCost(api.cost)}.</p>
             <p>
                 Please send a check made out to Reinstein QuizBowl to&hellip;<br />
                 Reinstein QuizBowl<br />
@@ -140,9 +132,9 @@ class BookingService {
             </p>
             <p><a href="${Config.UI_PREFIX}/order/${booking.creationId}/invoice">View Invoice</a></p>
         """.trimIndent()
-
-        return body
     }
+
+    private fun formatCost(cost: BigDecimal?) = cost.let(CURRENCY_FORMATTER::format) ?: "TBD"
 
     companion object {
         val CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US)

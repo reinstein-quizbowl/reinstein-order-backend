@@ -16,9 +16,6 @@ import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.util.Util
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 
 @Service
 class PacketAssignmentService {
