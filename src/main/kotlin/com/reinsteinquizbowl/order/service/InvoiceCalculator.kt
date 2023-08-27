@@ -47,6 +47,7 @@ class InvoiceCalculator {
         return "$schoolId-$thisBookingSequence"
     }
 
+    // This logic is described in the UI, so when updating it, it should be updated in both places.
     @Suppress("MagicNumber")
     private fun calculateCostForPacket(schoolsExposed: Long): BigDecimal = when (schoolsExposed) {
         0L -> BigDecimal("0.00")
