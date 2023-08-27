@@ -26,10 +26,12 @@ class SendgridAdapter {
     ) {
         val mail = Mail(from.toSendgridEmail(), subject, to.toSendgridEmail(), Content("text/html", bodyHtml))
 
+        val ccCleaned = cc.filter { it != to } // Sendgrid complains if there are duplicates, which is stupid, but whatever
+
         if (cc.isNotEmpty()) {
             val personalization = Personalization()
             personalization.addTo(to.toSendgridEmail())
-            cc.forEach { personalization.addCc(it.toSendgridEmail()) }
+            ccCleaned.forEach { personalization.addCc(it.toSendgridEmail()) }
             mail.addPersonalization(personalization)
         }
 
