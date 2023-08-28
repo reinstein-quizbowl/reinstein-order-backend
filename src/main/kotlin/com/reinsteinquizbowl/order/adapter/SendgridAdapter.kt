@@ -26,7 +26,7 @@ class SendgridAdapter {
     ) {
         val mail = Mail(from.toSendgridEmail(), subject, to.toSendgridEmail(), Content("text/html", bodyHtml))
 
-        val ccCleaned = cc.filter { it != to } // Sendgrid complains if there are duplicates, which is stupid, but whatever
+        val ccCleaned = cc.filter { it.address != to.address }.distinctBy { it.address } // Sendgrid complains if there are duplicates, which is stupid, but whatever
 
         if (cc.isNotEmpty()) {
             val personalization = Personalization()
