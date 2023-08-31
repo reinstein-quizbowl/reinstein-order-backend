@@ -1,3 +1,9 @@
+create table account (
+    id serial primary key,
+    username text not null unique,
+    password_hash text not null
+);
+
 create table year (
     code text primary key,
     name text not null unique,
