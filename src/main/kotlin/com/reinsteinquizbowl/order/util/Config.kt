@@ -21,7 +21,7 @@ object Config {
     val SUBMISSION_EMAIL_CC_DESCRIPTION: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC_DESCRIPTION")
 
     val FROM_ADDRESS = EmailAddress(address = "david@reinsteinquizbowl.com", description = "Reinstein QuizBowl")
-    
+
     /* It's difficult to set a date to null, because we can't really distinguish "there is no date in this payload because we're not affecting that field" from "we want to set the date to null".
      * We use a sentinel date to indicate we want to set to null. Any client will need to know about this.
      */
