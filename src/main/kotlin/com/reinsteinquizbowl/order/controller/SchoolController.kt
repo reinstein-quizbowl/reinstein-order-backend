@@ -5,7 +5,6 @@ import com.reinsteinquizbowl.order.entity.School
 import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.Converter
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -15,9 +14,5 @@ class SchoolController {
     @Autowired private lateinit var convert: Converter
 
     @GetMapping("/schools")
-    @PreAuthorize("hasAuthority('admin')")
     fun getAll(): List<ApiSchool> = repo.findAll().sortedBy(School::shortName).map(convert::toApi)
-
-    @GetMapping("/schools/active")
-    fun getActive(): List<ApiSchool> = repo.findActive().sortedBy(School::shortName).map(convert::toApi)
 }
