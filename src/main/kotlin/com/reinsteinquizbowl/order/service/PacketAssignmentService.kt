@@ -188,6 +188,7 @@ class PacketAssignmentService {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun findDoubleBookings(): List<SchoolAndPacket> {
         val query = entityManager.createNativeQuery(
             """
