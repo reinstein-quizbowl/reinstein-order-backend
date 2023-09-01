@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DB_URL_WITHOUT_JDBC=$(echo $REINSTEIN_DB_URL | cut -d ":" -f "2-")
+
+PGPASSWORD=$REINSTEIN_DB_PASSWORD pg_dump --dbname=$DB_URL_WITHOUT_JDBC --user=$REINSTEIN_DB_USERNAME
