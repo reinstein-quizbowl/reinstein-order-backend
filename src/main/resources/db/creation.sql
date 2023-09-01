@@ -159,6 +159,7 @@ create or replace view packet_exposure as (
             'Conference: ' || c.name as source,
             cp.booking_conference_id as source_id,
             b.id as booking_id,
+            b.creation_id as booking_creation_id,
             b.school_id as orderer_school_id,
             s.tentative_packet_exposure,
             s.confirmed_packet_exposure
@@ -177,6 +178,7 @@ create or replace view packet_exposure as (
             'Non-Conference Game' as source,
             g.id as source_id,
             b.id as booking_id,
+            b.creation_id as booking_creation_id,
             b.school_id as orderer_school_id,
             s.tentative_packet_exposure,
             s.confirmed_packet_exposure
@@ -194,6 +196,7 @@ create or replace view packet_exposure as (
             'Practice Order' as source,
             b.id as source_id,
             b.id as booking_id,
+            b.creation_id as booking_creation_id,
             b.school_id as orderer_school_id,
             s.tentative_packet_exposure,
             s.confirmed_packet_exposure

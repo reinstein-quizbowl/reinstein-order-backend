@@ -3,17 +3,13 @@ package com.reinsteinquizbowl.order.controller
 import com.reinsteinquizbowl.order.api.ApiBooking
 import com.reinsteinquizbowl.order.api.ApiPacket
 import com.reinsteinquizbowl.order.api.ApiPacketAssignment
-import com.reinsteinquizbowl.order.api.ApiPacketExposure
 import com.reinsteinquizbowl.order.entity.Packet
-import com.reinsteinquizbowl.order.entity.Year
-import com.reinsteinquizbowl.order.repository.PacketExposureRepository
 import com.reinsteinquizbowl.order.repository.PacketRepository
-import com.reinsteinquizbowl.order.repository.YearRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.PacketAssignmentService
+import com.reinsteinquizbowl.order.service.YearService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -28,10 +24,9 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 class PacketController {
     @Autowired private lateinit var repo: PacketRepository
-    @Autowired private lateinit var exposureRepo: PacketExposureRepository
-    @Autowired private lateinit var yearRepo: YearRepository
     @Autowired private lateinit var assignmentService: PacketAssignmentService
     @Autowired private lateinit var bookingService: BookingService
+    @Autowired private lateinit var yearService: YearService
     @Autowired private lateinit var convert: Converter
 
     @GetMapping("/packets")
@@ -39,7 +34,7 @@ class PacketController {
         @RequestParam yearCode: String? = null,
         @RequestParam filter: String? = null,
     ): List<ApiPacket> {
-        val year = if (yearCode.isNullOrBlank()) null else getYear(yearCode)
+        val year = if (yearCode.isNullOrBlank()) null else yearService.getYear(yearCode)
 
         var packets = if (year == null) repo.findAll() else repo.findByYearCode(year.code!!)
         when (filter) {
@@ -50,19 +45,6 @@ class PacketController {
         return packets
             .sortedWith(compareBy<Packet> { it.yearCode }.thenBy { it.number }) // presuming the year codes make sense for that
             .map(convert::toApi)
-    }
-
-    @GetMapping("/packetExposures")
-    fun getExposures(
-        @RequestParam yearCode: String? = null,
-    ): List<ApiPacketExposure> {
-        val year = getYear(yearCode) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Year is required")
-
-        val packetIds = repo.findByYearCode(year.code!!)
-            .mapNotNull(Packet::id)
-
-        val exposures = exposureRepo.findByPacketIdIn(packetIds)
-        return exposures.map(convert::toApi)
     }
 
     @GetMapping("/bookings/{creationId}/potentialPacketAssignments")
@@ -104,10 +86,5 @@ class PacketController {
 
         val refetched = bookingService.refetch(booking)
         return convert.toApi(refetched)
-    }
-
-    private fun getYear(yearCode: String?): Year {
-        yearCode ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Missing year")
-        return yearRepo.findByIdOrNull(yearCode) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid year")
     }
 }

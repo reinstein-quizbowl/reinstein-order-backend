@@ -7,6 +7,7 @@ import com.reinsteinquizbowl.order.entity.BookingConferencePacket
 import com.reinsteinquizbowl.order.entity.NonConferenceGame
 import com.reinsteinquizbowl.order.entity.Packet
 import com.reinsteinquizbowl.order.entity.School
+import com.reinsteinquizbowl.order.entity.SchoolAndPacket
 import com.reinsteinquizbowl.order.repository.BookingConferencePacketRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceSchoolRepository
@@ -14,6 +15,7 @@ import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameSchoolRepository
 import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.util.Util
+import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -25,6 +27,7 @@ class PacketAssignmentService {
     @Autowired private lateinit var nonConferenceGameRepo: NonConferenceGameRepository
     @Autowired private lateinit var nonConferenceGameSchoolRepo: NonConferenceGameSchoolRepository
     @Autowired private lateinit var packetRepo: PacketRepository
+    @Autowired private lateinit var entityManager: EntityManager
 
     // This must be deterministic! Assignments are generated multiple times and compared; if identical input data can produce different results, the process will fail.
     fun findAssignments(booking: Booking): List<ApiPacketAssignment> {
@@ -183,6 +186,21 @@ class PacketAssignmentService {
             it.assignedPacket = null
             nonConferenceGameRepo.save(it)
         }
+    }
+
+    fun findDoubleBookings(): List<SchoolAndPacket> {
+        val query = entityManager.createNativeQuery(
+            """
+                select e.exposed_school_id as school_id, e.packet_id 
+                from packet_exposure e
+                group by exposed_school_id, packet_id
+                having count(*) > 1
+            """
+        )
+
+        return query.resultList
+            .map { it as Array<Any> }
+            .map { SchoolAndPacket((it[0] as Int).toLong(), (it[1] as Int).toLong()) } // there has to be a less dumb way to do this
     }
 
     companion object {

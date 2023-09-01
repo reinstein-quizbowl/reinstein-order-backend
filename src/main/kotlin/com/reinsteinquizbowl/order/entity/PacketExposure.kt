@@ -10,11 +10,13 @@ import org.hibernate.annotations.Immutable
 @Immutable // view
 data class PacketExposure(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) var id: Long? = null, // not necessarily consistent from query to query, but JPA needs some kind of ID
-    var packetId: Long,
-    var exposedSchoolId: Long,
-    var source: String,
-    var bookingId: Long,
-    var ordererSchoolId: Long,
-    var tentativePacketExposure: Boolean,
-    var confirmedPacketExposure: Boolean,
+    val packetId: Long,
+    val exposedSchoolId: Long,
+    val source: String,
+    val sourceId: Long,
+    val bookingId: Long,
+    val bookingCreationId: String,
+    val ordererSchoolId: Long,
+    val tentativePacketExposure: Boolean,
+    val confirmedPacketExposure: Boolean,
 )
