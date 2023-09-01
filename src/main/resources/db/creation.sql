@@ -1,4 +1,4 @@
-create table account (
+create table if not exists account (
     id serial primary key,
     username text not null unique,
     password_hash text not null
@@ -61,7 +61,8 @@ create table school (
 create table booking_status (
     code text primary key,
     label text not null unique,
-    assume_packet_exposure boolean not null,
+    tentative_packet_exposure boolean not null,
+    confirmed_packet_exposure boolean not null,
     sequence int null
 );
 
@@ -148,27 +149,57 @@ create table invoice_line (
 );
 
 create or replace view packet_exposure as (
-    select cp.assigned_packet_id as packet_id, cs.school_id, 'Conference: ' || c.name as source, cp.booking_conference_id as source_id, b.id as booking_id, b.name as orderer_name
-    from booking_conference_packet cp
-        join booking_conference c on cp.booking_conference_id = c.id
-        join booking_conference_school cs on cs.booking_conference_id = c.id
-        join booking b on c.booking_id = b.id
-    where b.booking_status_code in (select code from booking_status where assume_packet_exposure = true)
+    select
+        row_number() over () as id, -- synthetic ID so we can map this view with JPA
+        *
+    from (
+        select
+            cp.assigned_packet_id as packet_id,
+            cs.school_id as exposed_school_id,
+            'Conference: ' || c.name as source,
+            cp.booking_conference_id as source_id,
+            b.id as booking_id,
+            b.school_id as orderer_school_id,
+            s.tentative_packet_exposure,
+            s.confirmed_packet_exposure
+        from booking_conference_packet cp
+            join booking_conference c on cp.booking_conference_id = c.id
+            join booking_conference_school cs on cs.booking_conference_id = c.id
+            join booking b on c.booking_id = b.id
+            join booking_status s on b.booking_status_code = s.code
+        where (s.tentative_packet_exposure = true or s.confirmed_packet_exposure = true)
 
-    union all
+        union all
 
-    select g.assigned_packet_id as packet_id, gs.school_id, 'Non-Conference Game' as source, g.id as source_id, b.id as booking_id, b.name as orderer_name
-    from non_conference_game_school gs
-        join non_conference_game g on gs.non_conference_game_id = g.id
-        join booking b on g.booking_id = b.id
-    where b.booking_status_code in (select code from booking_status where assume_packet_exposure = true)
+        select
+            g.assigned_packet_id as packet_id,
+            gs.school_id as exposed_school_id,
+            'Non-Conference Game' as source,
+            g.id as source_id,
+            b.id as booking_id,
+            b.school_id as orderer_school_id,
+            s.tentative_packet_exposure,
+            s.confirmed_packet_exposure
+        from non_conference_game_school gs
+            join non_conference_game g on gs.non_conference_game_id = g.id
+            join booking b on g.booking_id = b.id
+            join booking_status s on b.booking_status_code = s.code
+        where (s.tentative_packet_exposure = true or s.confirmed_packet_exposure = true)
 
-    union all
+        union all
 
-    select po.packet_id, b.school_id, 'Practice Order' as source, b.id as source_id, b.id as booking_id, b.name as orderer_name
-    from booking_practice_packet_order po
-        join booking b on po.booking_id = b.id
-    where b.booking_status_code in (select code from booking_status where assume_packet_exposure = true)
-
-    -- THINK: Should the school that placed an order be count as exposed to all of its packets, since the coach will be getting them?
+        select
+            po.packet_id,
+            b.school_id as exposed_school_id,
+            'Practice Order' as source,
+            b.id as source_id,
+            b.id as booking_id,
+            b.school_id as orderer_school_id,
+            s.tentative_packet_exposure,
+            s.confirmed_packet_exposure
+        from booking_practice_packet_order po
+            join booking b on po.booking_id = b.id
+            join booking_status s on b.booking_status_code = s.code
+        where (s.tentative_packet_exposure = true or s.confirmed_packet_exposure = true)
+    ) a
 );

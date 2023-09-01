@@ -9,6 +9,7 @@ import com.reinsteinquizbowl.order.api.ApiCompilation
 import com.reinsteinquizbowl.order.api.ApiInvoiceLine
 import com.reinsteinquizbowl.order.api.ApiNonConferenceGame
 import com.reinsteinquizbowl.order.api.ApiPacket
+import com.reinsteinquizbowl.order.api.ApiPacketExposure
 import com.reinsteinquizbowl.order.api.ApiSchool
 import com.reinsteinquizbowl.order.api.ApiStateSeries
 import com.reinsteinquizbowl.order.api.ApiYear
@@ -22,6 +23,7 @@ import com.reinsteinquizbowl.order.entity.Compilation
 import com.reinsteinquizbowl.order.entity.InvoiceLine
 import com.reinsteinquizbowl.order.entity.NonConferenceGame
 import com.reinsteinquizbowl.order.entity.Packet
+import com.reinsteinquizbowl.order.entity.PacketExposure
 import com.reinsteinquizbowl.order.entity.School
 import com.reinsteinquizbowl.order.entity.StateSeries
 import com.reinsteinquizbowl.order.entity.Year
@@ -177,5 +179,15 @@ class Converter {
         endDate = entity.endDate!!,
         questionsShipStarting = entity.questionsShipStarting!!,
         maximumPacketPracticeMaterialPrice = entity.maximumPacketPracticeMaterialPrice,
+    )
+
+    fun toApi(entity: PacketExposure) = ApiPacketExposure(
+        packetId = entity.packetId,
+        exposedSchoolId = entity.exposedSchoolId,
+        source = entity.source,
+        bookingId = entity.bookingId,
+        ordererSchoolId = entity.ordererSchoolId,
+        tentativePacketExposure = entity.tentativePacketExposure,
+        confirmedPacketExposure = entity.confirmedPacketExposure,
     )
 }

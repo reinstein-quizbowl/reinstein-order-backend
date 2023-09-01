@@ -8,7 +8,8 @@ import jakarta.persistence.Id
 data class BookingStatus(
     @Id var code: String? = null,
     var label: String? = null,
-    var assumePacketExposure: Boolean? = null,
+    var tentativePacketExposure: Boolean? = null,
+    var confirmedPacketExposure: Boolean? = null,
     var sequence: Long? = null,
 ) {
     fun allowsChangeByNonAdmin() = code == ApiBooking.BookingStatus.UNSUBMITTED

@@ -3,8 +3,10 @@ package com.reinsteinquizbowl.order.controller
 import com.reinsteinquizbowl.order.api.ApiBooking
 import com.reinsteinquizbowl.order.api.ApiPacket
 import com.reinsteinquizbowl.order.api.ApiPacketAssignment
+import com.reinsteinquizbowl.order.api.ApiPacketExposure
 import com.reinsteinquizbowl.order.entity.Packet
 import com.reinsteinquizbowl.order.entity.Year
+import com.reinsteinquizbowl.order.repository.PacketExposureRepository
 import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.repository.YearRepository
 import com.reinsteinquizbowl.order.service.BookingService
@@ -26,6 +28,7 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 class PacketController {
     @Autowired private lateinit var repo: PacketRepository
+    @Autowired private lateinit var exposureRepo: PacketExposureRepository
     @Autowired private lateinit var yearRepo: YearRepository
     @Autowired private lateinit var assignmentService: PacketAssignmentService
     @Autowired private lateinit var bookingService: BookingService
@@ -47,6 +50,19 @@ class PacketController {
         return packets
             .sortedWith(compareBy<Packet> { it.yearCode }.thenBy { it.number }) // presuming the year codes make sense for that
             .map(convert::toApi)
+    }
+
+    @GetMapping("/packetExposures")
+    fun getExposures(
+        @RequestParam yearCode: String? = null,
+    ): List<ApiPacketExposure> {
+        val year = getYear(yearCode) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Year is required")
+
+        val packetIds = repo.findByYearCode(year.code!!)
+            .mapNotNull(Packet::id)
+
+        val exposures = exposureRepo.findByPacketIdIn(packetIds)
+        return exposures.map(convert::toApi)
     }
 
     @GetMapping("/bookings/{creationId}/potentialPacketAssignments")

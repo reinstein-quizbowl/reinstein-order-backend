@@ -104,13 +104,13 @@ insert into compilation
 ('Social Studies',           '270 tossups, 175 bonuses', 45.00, true,      600);
 
 insert into booking_status
-(code,          label,         assume_packet_exposure, sequence) values
-('unsubmitted', 'Unsubmitted', false,                  100),
-('submitted',   'Submitted',   true,                   200),
-('approved',    'Approved',    true,                   300),
-('shipped',     'Shipped',     true,                   400),
-('canceled',    'Canceled',    false,                  1000),
-('abandoned',   'Abandoned',   false,                  1100),
-('rejected',    'Rejected',    false,                  1200);
+(code,          label,         tentative_packet_exposure, confirmed_packet_exposure, sequence) values
+('unsubmitted', 'Unsubmitted', false,                     false,                     100),
+('submitted',   'Submitted',   true,                      false,                     200),
+('approved',    'Approved',    false,                     true,                      300),
+('shipped',     'Shipped',     false,                     true,                      400),
+('abandoned',   'Abandoned',   false,                     false,                     1000),
+('canceled',    'Canceled',    false,                     false,                     1100),
+('rejected',    'Rejected',    false,                     false,                     1200);
 
 -- school data are in a separate file
