@@ -1,5 +1,7 @@
 package com.reinsteinquizbowl.order.util
 
+import java.time.LocalDate
+
 // This object exists mostly to provide a centralized place documenting what environment variables are required, but it also contains some non-environment variables.
 @Suppress("UnusedPrivateProperty")
 object Config {
@@ -19,4 +21,10 @@ object Config {
     val SUBMISSION_EMAIL_CC_DESCRIPTION: String? = System.getenv("REINSTEIN_SUBMISSION_EMAIL_CC_DESCRIPTION")
 
     val FROM_ADDRESS = EmailAddress(address = "david@reinsteinquizbowl.com", description = "Reinstein QuizBowl")
+    
+    /* It's difficult to set a date to null, because we can't really distinguish "there is no date in this payload because we're not affecting that field" from "we want to set the date to null".
+     * We use a sentinel date to indicate we want to set to null. Any client will need to know about this.
+     */
+    @Suppress("MagicNumber")
+    val SENTINEL_NULL_DATE: LocalDate = LocalDate.of(1900, 1, 1)
 }

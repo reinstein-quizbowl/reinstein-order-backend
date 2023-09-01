@@ -11,6 +11,7 @@ import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.InvoiceCalculator
 import com.reinsteinquizbowl.order.util.Config
 import com.reinsteinquizbowl.order.util.EmailAddress
+import com.reinsteinquizbowl.order.util.Util
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -65,8 +66,8 @@ class BookingController {
         entity.externalNote = input.externalNote ?: entity.externalNote
 
         // FIXME authorize admin for these fields
-        entity.shipDate = input.shipDate ?: entity.shipDate
-        entity.paymentReceivedDate = input.paymentReceivedDate ?: entity.paymentReceivedDate
+        entity.shipDate = Util.handleDateInput(input.shipDate, entity.shipDate)
+        entity.paymentReceivedDate = Util.handleDateInput(input.paymentReceivedDate, entity.paymentReceivedDate)
         entity.internalNote = input.internalNote ?: entity.internalNote
 
         // FIXME authorize admin in some cases only

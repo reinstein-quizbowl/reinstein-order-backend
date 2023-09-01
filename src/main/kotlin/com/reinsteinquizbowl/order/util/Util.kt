@@ -21,4 +21,10 @@ object Util {
             }
         }
     }
+
+    fun handleDateInput(input: LocalDate?, oldValue: LocalDate?) = when {
+        input == null -> oldValue
+        input == Config.SENTINEL_NULL_DATE -> null
+        else -> input
+    }
 }
