@@ -65,6 +65,7 @@ class WebSecurityConfig {
         val config = CorsConfiguration()
         config.allowedOrigins = listOf("*")
         config.allowedMethods = listOf("*")
+        config.allowedHeaders = listOf("*")
 
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", config)
