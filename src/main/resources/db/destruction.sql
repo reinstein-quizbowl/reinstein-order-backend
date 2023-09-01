@@ -13,6 +13,6 @@ drop table booking_status;
 drop table school;
 drop table compilation;
 drop table packet;
-drop table state series;
+drop table state_series;
 drop table year;
 -- account is not dropped because we generally don't want to re-create it in dev cycles, and no other tables depend on it
