@@ -26,3 +26,6 @@ For now, there is only one role (`admin`), which is automatically attached to ev
 Adding a user currently requires a manual `insert into account…` with a BCrypt hash you compute separately. No programmatic facility is provided for this because we anticipate adding users to be extraordinarily rare (possibly never other than for initial deployment).
 
 The auth setup was largely accomplished by following [this tutorial](https://www.bezkoder.com/spring-boot-react-jwt-auth/) (with some adaptations).
+
+# License
+The purpose of posting this code publicly is to serve as a portfolio item for its developer, [Jonah Greenthal](https://www.github.com/jonahgreenthal). The code is owned by Reinstein QuizBowl and is not licensed for other use, but you're welcome to look at it, and if you want to do something with it, write to [admin@reinsteinquizbowl.com](mailto:admin@reinsteinquizbowl.com).
