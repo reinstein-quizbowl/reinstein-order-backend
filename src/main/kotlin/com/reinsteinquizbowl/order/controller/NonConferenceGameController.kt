@@ -12,6 +12,7 @@ import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
+import com.reinsteinquizbowl.order.spring.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -32,6 +33,7 @@ class NonConferenceGameController {
     @Autowired private lateinit var packetRepo: PacketRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
     @Autowired private lateinit var bookingService: BookingService
+    @Autowired private lateinit var user: UserService
     @Autowired private lateinit var convert: Converter
 
     @PostMapping("/bookings/{creationId}/nonConferenceGames")
@@ -67,21 +69,6 @@ class NonConferenceGameController {
         val bookingRefetched = bookingRepo.findByIdOrNull(booking.id!!)!!
 
         return convert.toApi(bookingRefetched)
-    }
-
-    @PatchMapping("/bookings/{creationId}/nonConferenceGames/{gameId}")
-    fun update(
-        @PathVariable(name = "creationId") bookingCreationId: String,
-        @PathVariable gameId: Long,
-        @RequestBody input: ApiNonConferenceGame,
-    ): ApiNonConferenceGame {
-        val (_, game) = findAndAuthorize(bookingCreationId, gameId)
-
-        // FIXME authorize more
-        // THINK: should we sanity-check the packet authorization?
-        game.assignedPacket = input.assignedPacket?.id?.let(packetRepo::findByIdOrNull) ?: game.assignedPacket
-
-        return convert.toApi(game)
     }
 
     @DeleteMapping("/bookings/{creationId}/nonConferenceGames/{gameId}")

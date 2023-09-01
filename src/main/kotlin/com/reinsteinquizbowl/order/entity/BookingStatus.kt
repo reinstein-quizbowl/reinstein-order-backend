@@ -1,5 +1,6 @@
 package com.reinsteinquizbowl.order.entity
 
+import com.reinsteinquizbowl.order.api.ApiBooking
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 
@@ -9,4 +10,6 @@ data class BookingStatus(
     var label: String? = null,
     var assumePacketExposure: Boolean? = null,
     var sequence: Long? = null,
-)
+) {
+    fun allowsChangeByNonAdmin() = code == ApiBooking.BookingStatus.UNSUBMITTED
+}

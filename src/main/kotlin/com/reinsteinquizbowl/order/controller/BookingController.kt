@@ -9,6 +9,7 @@ import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.InvoiceCalculator
+import com.reinsteinquizbowl.order.spring.UserService
 import com.reinsteinquizbowl.order.util.Config
 import com.reinsteinquizbowl.order.util.EmailAddress
 import com.reinsteinquizbowl.order.util.Util
@@ -32,6 +33,7 @@ class BookingController {
     @Autowired private lateinit var statusRepo: BookingStatusRepository
     @Autowired private lateinit var service: BookingService
     @Autowired private lateinit var invoice: InvoiceCalculator
+    @Autowired private lateinit var user: UserService
     @Autowired private lateinit var sendgrid: SendgridAdapter
     @Autowired private lateinit var convert: Converter
 
@@ -65,13 +67,17 @@ class BookingController {
         entity.requestsW9 = input.requestsW9 ?: entity.requestsW9 ?: false
         entity.externalNote = input.externalNote ?: entity.externalNote
 
-        // FIXME authorize admin for these fields
-        entity.shipDate = Util.handleDateInput(input.shipDate, entity.shipDate)
-        entity.paymentReceivedDate = Util.handleDateInput(input.paymentReceivedDate, entity.paymentReceivedDate)
-        entity.internalNote = input.internalNote ?: entity.internalNote
-
-        // FIXME authorize admin in some cases only
-        entity.status = input.statusCode?.let(statusRepo::findByIdOrNull) ?: entity.status ?: statusRepo.findByIdOrNull(ApiBooking.BookingStatus.UNSUBMITTED)
+        if (user.isAdmin()) {
+            entity.shipDate = Util.handleDateInput(input.shipDate, entity.shipDate)
+            entity.paymentReceivedDate = Util.handleDateInput(input.paymentReceivedDate, entity.paymentReceivedDate)
+            entity.internalNote = input.internalNote ?: entity.internalNote
+            entity.status = input.statusCode?.let(statusRepo::findByIdOrNull) ?: entity.status ?: statusRepo.findByIdOrNull(ApiBooking.BookingStatus.UNSUBMITTED)
+        } else {
+            if (entity.status != null && entity.status!!.code != ApiBooking.BookingStatus.UNSUBMITTED) {
+                throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Booking was already submitted")
+            }
+            entity.status = statusRepo.findByIdOrNull(ApiBooking.BookingStatus.UNSUBMITTED)
+        }
 
         val saved = repo.save(entity)
 
