@@ -36,9 +36,10 @@ data class ApiBooking(
         const val SUBMITTED = "submitted"
         const val APPROVED = "approved"
         const val SHIPPED = "shipped"
+        const val ABANDONED = "abandoned"
         const val CANCELED = "canceled"
         const val REJECTED = "rejected"
 
-        val VALID_VALUES = listOf(UNSUBMITTED, SUBMITTED, APPROVED, SHIPPED, CANCELED, REJECTED)
+        val VALID_VALUES = listOf(UNSUBMITTED, SUBMITTED, APPROVED, SHIPPED, ABANDONED, CANCELED, REJECTED)
     }
 }
