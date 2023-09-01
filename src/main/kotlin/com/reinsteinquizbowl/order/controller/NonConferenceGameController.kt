@@ -8,16 +8,13 @@ import com.reinsteinquizbowl.order.entity.NonConferenceGameSchool
 import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameSchoolRepository
-import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
-import com.reinsteinquizbowl.order.spring.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -30,10 +27,8 @@ class NonConferenceGameController {
     @Autowired private lateinit var repo: NonConferenceGameRepository
     @Autowired private lateinit var bookingRepo: BookingRepository
     @Autowired private lateinit var nonConferenceGameSchoolRepo: NonConferenceGameSchoolRepository
-    @Autowired private lateinit var packetRepo: PacketRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
     @Autowired private lateinit var bookingService: BookingService
-    @Autowired private lateinit var user: UserService
     @Autowired private lateinit var convert: Converter
 
     @PostMapping("/bookings/{creationId}/nonConferenceGames")
