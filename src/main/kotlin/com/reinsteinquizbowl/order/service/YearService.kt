@@ -12,8 +12,15 @@ import org.springframework.web.server.ResponseStatusException
 class YearService {
     @Autowired private lateinit var yearRepo: YearRepository
 
-    fun getYear(yearCode: String?): Year {
-        yearCode ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Missing year")
+    fun getYear(yearCode: String?, required: Boolean): Year? {
+        if (yearCode.isNullOrBlank()) {
+            if (required) {
+                throw ResponseStatusException(HttpStatus.NOT_FOUND, "Missing year")
+            } else {
+                return null
+            }
+        }
+
         return yearRepo.findByIdOrNull(yearCode) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid year")
     }
 }

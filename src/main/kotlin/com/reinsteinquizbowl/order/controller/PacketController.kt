@@ -34,7 +34,7 @@ class PacketController {
         @RequestParam yearCode: String? = null,
         @RequestParam filter: String? = null,
     ): List<ApiPacket> {
-        val year = if (yearCode.isNullOrBlank()) null else yearService.getYear(yearCode)
+        val year = yearService.getYear(yearCode, required = false)
 
         var packets = if (year == null) repo.findAll() else repo.findByYearCode(year.code!!)
         when (filter) {

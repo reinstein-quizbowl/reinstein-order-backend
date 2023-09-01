@@ -8,12 +8,10 @@ import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.PacketAssignmentService
 import com.reinsteinquizbowl.order.service.YearService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.server.ResponseStatusException
 
 @RestController
 class PacketExposureController {
@@ -27,7 +25,7 @@ class PacketExposureController {
     fun getExposures(
         @RequestParam yearCode: String? = null,
     ): List<ApiPacketExposure> {
-        val year = yearService.getYear(yearCode) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Year is required")
+        val year = yearService.getYear(yearCode, required = true)!!
 
         val packetIds = packetRepo.findByYearCode(year.code!!)
             .mapNotNull(Packet::id)
