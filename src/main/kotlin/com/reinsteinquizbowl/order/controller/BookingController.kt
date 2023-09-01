@@ -14,6 +14,7 @@ import com.reinsteinquizbowl.order.util.Config
 import com.reinsteinquizbowl.order.util.EmailAddress
 import com.reinsteinquizbowl.order.util.Util
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -36,6 +37,8 @@ class BookingController {
     @Autowired private lateinit var user: UserService
     @Autowired private lateinit var sendgrid: SendgridAdapter
     @Autowired private lateinit var convert: Converter
+
+    private val logger = LoggerFactory.getLogger(BookingController::class.java)
 
     @GetMapping("/bookings")
     @PreAuthorize("hasAuthority('admin')")
@@ -118,14 +121,14 @@ class BookingController {
                 bodyHtml = body,
             )
         } catch (ex: RuntimeException) {
-            System.err.println("Couldn't send internal confirmation email from booking ${booking.id}: ${ex.message}\n${ex.stackTraceToString()}")
+            logger.warn("Couldn't send internal confirmation email from booking ${booking.id}", ex)
             // but we don't want the transaction rolled back or anything
         }
     }
 
     private fun sendExternalConfirmationEmail(booking: Booking) {
         if (booking.emailAddress.isNullOrBlank()) {
-            System.err.println("No email address for booking ${booking.id}; can't send an external confirmation email")
+            logger.warn("No email address for booking ${booking.id}; can't send an external confirmation email")
             return
         }
 
@@ -144,7 +147,7 @@ class BookingController {
                 bodyHtml = internalConfirmationBody,
             )
         } catch (ex: RuntimeException) {
-            System.err.println("Couldn't send external confirmation email from booking ${booking.id}: ${ex.message}\n${ex.stackTraceToString()}")
+            logger.warn("Couldn't send external confirmation email from booking ${booking.id}", ex)
             // but we don't want the transaction rolled back or anything
         }
     }

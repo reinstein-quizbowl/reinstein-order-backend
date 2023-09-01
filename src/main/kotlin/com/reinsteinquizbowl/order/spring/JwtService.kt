@@ -1,5 +1,6 @@
 package com.reinsteinquizbowl.order.spring
 
+import com.reinsteinquizbowl.order.controller.BookingController
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.MalformedJwtException
@@ -7,6 +8,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
@@ -20,6 +22,7 @@ class JwtService(
     @Value("\${reinsteinquizbowl.jwtSecret}") private val secret: String,
     @Value("\${reinsteinquizbowl.jwtExpirationMs}") private val jwtExpirationMs: Long,
 ) {
+    private val logger = LoggerFactory.getLogger(BookingController::class.java)
 
     fun getUsernameFromToken(token: String?) =
         Jwts.parserBuilder().setSigningKey(key()).build()
@@ -49,13 +52,13 @@ class JwtService(
             Jwts.parserBuilder().setSigningKey(key()).build().parse(token)
             return true
         } catch (ex: MalformedJwtException) {
-            System.err.println("Invalid JWT token: ${ex.message}")
+            logger.info("Invalid JWT: ${ex.message}")
         } catch (ex: ExpiredJwtException) {
-            System.err.println("JWT token is expired: ${ex.message}")
+            logger.info("JWT is expired: ${ex.message}")
         } catch (ex: UnsupportedJwtException) {
-            System.err.println("JWT token is unsupported: ${ex.message}")
+            logger.info("JWT is unsupported: ${ex.message}")
         } catch (ex: IllegalArgumentException) {
-            System.err.println("JWT claims string is empty: ${ex.message}")
+            logger.info("JWT claims string is empty: ${ex.message}")
         }
 
         return false
