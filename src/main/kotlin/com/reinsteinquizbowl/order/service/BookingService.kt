@@ -120,6 +120,12 @@ class BookingService {
         // This is cheating, but the API converter gathers so much useful information it's easier to start from that
         val api = convert.toApi(booking)
 
+        val questionSecurityWarning = if (api.conference != null || api.nonConferenceGames!!.isNotEmpty()) {
+            "<p><strong>You must be sure to use the packets the way we have assigned them.</strong> This helps ensure that games throughout the state will be on fresh questions for the teams playing. The packet assignments are on the invoice, and we&rsquo;re happy to answer any questions you have.</p>"
+        } else {
+            ""
+        }
+
         return """
             <p>Thank you for the order you placed with Reinstein QuizBowl on behalf of ${booking.school!!.name!!}!</p>
             <p>Your order number is ${api.invoiceLabel}, and your total is ${formatCost(api.cost)}.</p>
@@ -131,6 +137,7 @@ class BookingService {
                 Lincolnshire, IL 60069&ndash;0057
             </p>
             <p><a href="${Config.UI_PREFIX}/order/${booking.creationId}/invoice">View Invoice</a></p>
+            $questionSecurityWarning
         """.trimIndent()
     }
 
