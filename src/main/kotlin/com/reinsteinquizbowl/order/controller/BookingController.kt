@@ -105,6 +105,17 @@ class BookingController {
         return convert.toApi(entity)
     }
 
+    @PostMapping("/bookings/{creationId}/confirm")
+    @PreAuthorize("hasAuthority('admin')")
+    fun confirm(@PathVariable creationId: String): ApiBooking {
+        val entity = service.findThenAuthorize(creationId)
+
+        sendInternalConfirmationEmail(entity)
+        sendExternalConfirmationEmail(entity)
+
+        return convert.toApi(entity)
+    }
+
     private fun sendInternalConfirmationEmail(booking: Booking) {
         val body = service.buildInternalConfirmationEmailBody(booking)
 
