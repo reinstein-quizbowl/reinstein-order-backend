@@ -105,6 +105,16 @@ class BookingController {
         return convert.toApi(entity)
     }
 
+    @PostMapping("/bookings/{creationId}/recalculateInvoice")
+    @PreAuthorize("hasAuthority('admin')")
+    fun recalculateInvoice(@PathVariable creationId: String): ApiBooking {
+        val entity = service.findThenAuthorize(creationId)
+
+        invoice.calculateAndAttach(entity)
+
+        return convert.toApi(service.refetch(entity))
+    }
+
     @PostMapping("/bookings/{creationId}/confirm")
     @PreAuthorize("hasAuthority('admin')")
     fun confirm(@PathVariable creationId: String): ApiBooking {

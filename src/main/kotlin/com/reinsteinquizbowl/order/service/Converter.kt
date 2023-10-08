@@ -149,6 +149,7 @@ class Converter {
 
     fun toApi(entity: Packet) = ApiPacket(
         id = entity.id!!,
+        name = "${entity.yearCode} regular-season packet ${entity.number}",
         yearCode = entity.yearCode!!,
         number = entity.number!!,
         availableForCompetition = entity.availableForCompetition!!,
