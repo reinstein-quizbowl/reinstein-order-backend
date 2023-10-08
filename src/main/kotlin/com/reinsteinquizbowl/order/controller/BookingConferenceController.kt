@@ -4,9 +4,7 @@ import com.reinsteinquizbowl.order.api.ApiBooking
 import com.reinsteinquizbowl.order.api.ApiBookingConference
 import com.reinsteinquizbowl.order.api.ApiPacket
 import com.reinsteinquizbowl.order.entity.BookingConference
-import com.reinsteinquizbowl.order.repository.BookingConferencePacketRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
-import com.reinsteinquizbowl.order.repository.BookingConferenceSchoolRepository
 import com.reinsteinquizbowl.order.service.BookingConferenceService
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
@@ -24,8 +22,6 @@ import org.springframework.web.server.ResponseStatusException
 @RestController
 class BookingConferenceController {
     @Autowired private lateinit var repo: BookingConferenceRepository
-    @Autowired private lateinit var bookingConferencePacketRepo: BookingConferencePacketRepository
-    @Autowired private lateinit var bookingConferenceSchoolRepo: BookingConferenceSchoolRepository
     @Autowired private lateinit var service: BookingConferenceService
     @Autowired private lateinit var bookingService: BookingService
     @Autowired private lateinit var convert: Converter
@@ -69,13 +65,7 @@ class BookingConferenceController {
         val conference = repo.findByBookingId(booking.id!!)
             ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "No conference for this booking")
 
-        val packets = bookingConferencePacketRepo.findByBookingConferenceId(conference.id!!)
-        bookingConferencePacketRepo.deleteAll(packets)
-
-        val schools = bookingConferenceSchoolRepo.findByBookingConferenceId(conference.id!!)
-        bookingConferenceSchoolRepo.deleteAll(schools)
-
-        repo.delete(conference)
+        service.delete(conference)
 
         return convert.toApi(bookingService.refetch(booking))
     }

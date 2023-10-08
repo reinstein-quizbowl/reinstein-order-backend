@@ -3,12 +3,17 @@ package com.reinsteinquizbowl.order.controller
 import com.reinsteinquizbowl.order.adapter.SendgridAdapter
 import com.reinsteinquizbowl.order.api.ApiBooking
 import com.reinsteinquizbowl.order.entity.Booking
+import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
 import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.BookingStatusRepository
+import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
+import com.reinsteinquizbowl.order.service.BookingConferenceService
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
 import com.reinsteinquizbowl.order.service.InvoiceCalculator
+import com.reinsteinquizbowl.order.service.NonConferenceGameService
+import com.reinsteinquizbowl.order.service.PracticeMaterialService
 import com.reinsteinquizbowl.order.spring.UserService
 import com.reinsteinquizbowl.order.util.Config
 import com.reinsteinquizbowl.order.util.EmailAddress
@@ -19,20 +24,27 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 
 @RestController
 class BookingController {
     @Autowired private lateinit var repo: BookingRepository
+    @Autowired private lateinit var conferenceRepo: BookingConferenceRepository
+    @Autowired private lateinit var nonConferenceGameRepo: NonConferenceGameRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
     @Autowired private lateinit var statusRepo: BookingStatusRepository
     @Autowired private lateinit var service: BookingService
+    @Autowired private lateinit var conferenceService: BookingConferenceService
+    @Autowired private lateinit var nonConferenceGameService: NonConferenceGameService
+    @Autowired private lateinit var practiceMaterialService: PracticeMaterialService
     @Autowired private lateinit var invoice: InvoiceCalculator
     @Autowired private lateinit var user: UserService
     @Autowired private lateinit var sendgrid: SendgridAdapter
@@ -124,6 +136,20 @@ class BookingController {
         sendExternalConfirmationEmail(entity)
 
         return convert.toApi(entity)
+    }
+
+    @DeleteMapping("/bookings/{creationId}")
+    @PreAuthorize("hasAuthority('admin')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun delete(@PathVariable creationId: String) {
+        val booking = service.findThenAuthorize(creationId)
+
+        conferenceRepo.findByBookingId(booking.id!!)?.let(conferenceService::delete)
+        nonConferenceGameRepo.findByBookingId(booking.id!!).forEach(nonConferenceGameService::delete)
+        practiceMaterialService.deleteOrders(booking)
+        invoice.clear(booking)
+
+        repo.delete(booking)
     }
 
     private fun sendInternalConfirmationEmail(booking: Booking) {

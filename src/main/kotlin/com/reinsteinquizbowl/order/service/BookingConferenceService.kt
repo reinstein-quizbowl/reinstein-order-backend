@@ -4,6 +4,7 @@ import com.reinsteinquizbowl.order.entity.BookingConference
 import com.reinsteinquizbowl.order.entity.BookingConferencePacket
 import com.reinsteinquizbowl.order.entity.BookingConferenceSchool
 import com.reinsteinquizbowl.order.repository.BookingConferencePacketRepository
+import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceSchoolRepository
 import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
@@ -15,10 +16,21 @@ import org.springframework.web.server.ResponseStatusException
 
 @Service
 class BookingConferenceService {
+    @Autowired private lateinit var repo: BookingConferenceRepository
     @Autowired private lateinit var bookingConferencePacketRepo: BookingConferencePacketRepository
     @Autowired private lateinit var bookingConferenceSchoolRepo: BookingConferenceSchoolRepository
     @Autowired private lateinit var packetRepo: PacketRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
+
+    fun delete(conference: BookingConference) {
+        val packets = bookingConferencePacketRepo.findByBookingConferenceId(conference.id!!)
+        bookingConferencePacketRepo.deleteAll(packets)
+
+        val schools = bookingConferenceSchoolRepo.findByBookingConferenceId(conference.id!!)
+        bookingConferenceSchoolRepo.deleteAll(schools)
+
+        repo.delete(conference)
+    }
 
     fun adjustSchools(conference: BookingConference, inputSchoolIds: List<Long>) {
         val extant = conference.id?.let { bookingConferenceSchoolRepo.findByBookingConferenceId(it) } ?: emptyList()
