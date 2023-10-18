@@ -7,6 +7,7 @@ import com.reinsteinquizbowl.order.entity.BookingPracticePacketOrder
 import com.reinsteinquizbowl.order.entity.BookingPracticeStateSeriesOrder
 import com.reinsteinquizbowl.order.entity.InvoiceLine
 import com.reinsteinquizbowl.order.entity.NonConferenceGame
+import com.reinsteinquizbowl.order.entity.Packet
 import com.reinsteinquizbowl.order.entity.Year
 import com.reinsteinquizbowl.order.repository.BookingConferencePacketRepository
 import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
@@ -70,8 +71,18 @@ class InvoiceCalculator {
         val games = nonConferenceGameRepo.findByBookingId(booking.id!!)
             .filter { it.assignedPacket != null }
             .sortedBy { it.id }
-        for (game in games) {
-            lines.add(calculateNonConferenceGameLine(game))
+        val nonConferenceGamePackets: List<Packet> = games
+            .mapNotNull(NonConferenceGame::assignedPacket)
+            .distinctBy { it.id!! }
+            .sortedWith(compareBy(Packet::yearCode, Packet::number))
+        val nonConferenceGamesByPacketId: Map<Long, List<NonConferenceGame>> = games
+            .sortedBy { it.id!! }
+            .groupBy { it.assignedPacket!!.id!! }
+        for (packet in nonConferenceGamePackets) {
+            val gamesThisPacket = nonConferenceGamesByPacketId[packet.id!!] ?: emptyList()
+            if (gamesThisPacket.isNotEmpty()) {
+                lines.add(calculateNonConferenceGameLine(packet, gamesThisPacket))
+            }
         }
 
         val practiceStateSeriesOrders = bookingPracticeStateSeriesOrderRepo.findByBookingId(booking.id!!)
@@ -131,25 +142,29 @@ class InvoiceCalculator {
                     bookingId = null,
                     itemType = "Conference packet",
                     itemId = packet.id!!.toString(),
-                    label = "Packet ${packet.number} from ${packet.yearCode} for conference use",
+                    label = "${packet.getName()} for conference use",
                     quantity = 1,
                     unitCost = calculateCostForPacket(schoolsInConference),
                 )
             }
     }
 
-    private fun calculateNonConferenceGameLine(game: NonConferenceGame): InvoiceLine {
-        val packet = game.assignedPacket!!
-        val schoolNames = nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!)
-            .map { it.school!!.shortName!! }
+    private fun calculateNonConferenceGameLine(packet: Packet, games: List<NonConferenceGame>): InvoiceLine {
+        val schoolNames = mutableListOf<List<String>>()
+        for (game in games) {
+            // This could be optimized into one database query if really necessary
+            schoolNames.add(nonConferenceGameSchoolRepo.findByNonConferenceGameId(game.id!!).map { it.school!!.shortName!! })
+        }
+        val schoolCount = schoolNames.flatten().size.toLong()
+        val gameDescriptions: List<String> = schoolNames.map { "the non-conference game involving ${Util.makeEnglishList(it)}" }
 
         return InvoiceLine(
             bookingId = null,
             itemType = "Non-conference game packet",
             itemId = packet.id!!.toString(),
-            label = "Packet ${packet.number} from ${packet.yearCode} for the non-conference game involving ${Util.makeEnglishList(schoolNames)}",
+            label = "${packet.getName()} for ${Util.makeEnglishList(gameDescriptions)}",
             quantity = 1,
-            unitCost = calculateCostForPacket(nonConferenceGameSchoolRepo.countByNonConferenceGameId(game.id!!)),
+            unitCost = calculateCostForPacket(schoolCount),
         )
     }
 
