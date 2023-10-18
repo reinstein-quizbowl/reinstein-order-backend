@@ -142,7 +142,6 @@ class PacketAssignmentService {
         val gamesById: Map<Long, NonConferenceGame> = games.associateBy { it.id!! }
 
         val packetIds = assignments.map { it.packetId!! }
-        require(packetIds.size == packetIds.distinct().size) { "Repeated packets" }
         val packets = packetRepo.findByIdIn(packetIds)
         require(packets.size == packetIds.size) { "Invalid packet IDs" }
         require(packets.all { it.availableForCompetition == true }) { "Packets not available for competition" }
