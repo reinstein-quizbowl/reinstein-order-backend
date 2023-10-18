@@ -15,4 +15,6 @@ data class Packet(
     var priceAsPracticeMaterial: BigDecimal? = null,
 ) {
     fun isAvailableAsPracticeMaterial() = priceAsPracticeMaterial != null
+
+    fun getName() = "$yearCode regular-season packet $number"
 }
