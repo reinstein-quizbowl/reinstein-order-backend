@@ -143,7 +143,7 @@ class PacketAssignmentService {
 
         val packetIds = assignments.map { it.packetId!! }
         val packets = packetRepo.findByIdIn(packetIds)
-        require(packets.size == packetIds.size) { "Invalid packet IDs" }
+        require(packets.size == packetIds.distinct().size) { "Invalid packet IDs" }
         require(packets.all { it.availableForCompetition == true }) { "Packets not available for competition" }
         val packetsById: Map<Long, Packet> = packets.associateBy { it.id!! }
 
