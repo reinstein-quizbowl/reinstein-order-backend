@@ -16,4 +16,10 @@ interface BookingRepository : CrudRepository<Booking, Long> {
         nativeQuery = true
     )
     fun countLowerIdBookingsForSchoolId(schoolId: Long, bookingId: Long): Long
+
+    @Query(
+        "select count(*) from booking where school_id is null and id < ?1",
+        nativeQuery = true
+    )
+    fun countLowerIdBookingsForNoSchool(bookingId: Long): Long
 }
