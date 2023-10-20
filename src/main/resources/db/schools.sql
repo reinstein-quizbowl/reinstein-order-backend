@@ -871,7 +871,7 @@ insert into school (name, short_name, address, city, state, postal_code, country
 ('Washington Middle School', 'Washington MS', '1100 N Main St', 'Washington', 'IL', '61571', 'USA', 40.717485, -89.407547, true, false, '588'),
 ('Waterloo Junior High School', 'Waterloo', '200 Bellefontaine Dr', 'Waterloo', 'IL', '62298', 'USA', 38.336263, -90.14247, true, false, '589'),
 ('Wauconda Middle School', 'Wauconda', '217 Slocum Lake Rd', 'Wauconda', 'IL', '60084', 'USA', 42.261022, -88.146249, true, false, '592'),
-('Waverly / Franklin (Co-op)', 'Waverly (Co-op)', '201 N Miller St', 'Waverly', 'IL', '62692', 'USA', 39.590885, -89.961911, true, true, null),
+('Waverly / Franklin (South County co-op)', 'Waverly (South County co-op)', '201 N Miller St', 'Waverly', 'IL', '62692', 'USA', 39.590885, -89.961911, true, true, null),
 ('Waverly Junior/Senior High School', 'Waverly', '201 N Miller St', 'Waverly', 'IL', '62692', 'USA', 39.590885, -89.961911, false, false, '593'),
 ('Wayne City School', 'Wayne City', '408 E Mill St', 'Wayne City', 'IL', '62895', 'USA', 38.345398, -88.585405, true, false, null),
 ('Wentworth Junior High School', 'Calumet City Wentworth', '560 Superior Ave', 'Calumet City', 'IL', '60409', 'USA', 41.619711, -87.544579, true, false, '84'),

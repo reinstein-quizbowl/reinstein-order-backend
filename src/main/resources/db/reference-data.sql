@@ -9,7 +9,8 @@ insert into year
 
 insert into state_series
 (name,                       description, price, available, sequence) values
-('2023 IESA State Series',   null,        75.00, true,      -2023);
+('2023 IESA State Series',   null,        75.00, true,      -2023),
+('2024 IESA State Series',   null,        75.00, false,     -2024);
 
 insert into packet
 (year_code, number, available_for_competition, price_as_practice_material) values
