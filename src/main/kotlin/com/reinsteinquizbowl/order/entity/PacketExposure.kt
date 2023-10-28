@@ -16,7 +16,7 @@ data class PacketExposure(
     val sourceId: Long,
     val bookingId: Long,
     val bookingCreationId: String,
-    val ordererSchoolId: Long,
+    val ordererSchoolId: Long? = null,
     val tentativePacketExposure: Boolean,
     val confirmedPacketExposure: Boolean,
 )

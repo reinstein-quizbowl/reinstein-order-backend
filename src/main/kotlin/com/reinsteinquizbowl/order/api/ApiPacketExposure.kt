@@ -7,7 +7,7 @@ data class ApiPacketExposure(
     val sourceId: Long,
     val bookingId: Long,
     val bookingCreationId: String,
-    val ordererSchoolId: Long,
+    val ordererSchoolId: Long?,
     val tentativePacketExposure: Boolean,
     val confirmedPacketExposure: Boolean,
 )
