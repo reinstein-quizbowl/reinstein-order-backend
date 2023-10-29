@@ -12,6 +12,7 @@ import com.reinsteinquizbowl.order.repository.PacketRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
+import com.reinsteinquizbowl.order.spring.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -33,6 +34,7 @@ class NonConferenceGameController {
     @Autowired private lateinit var packetRepo: PacketRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
     @Autowired private lateinit var bookingService: BookingService
+    @Autowired private lateinit var user: UserService
     @Autowired private lateinit var convert: Converter
 
     @PostMapping("/bookings/{creationId}/nonConferenceGames")
@@ -49,16 +51,20 @@ class NonConferenceGameController {
             val schools = schoolRepo.findByIdIn(schoolIds)
             if (schools.size != schoolIds.size) throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid school ID(s)")
 
-            val game = repo.save(
-                NonConferenceGame(
-                    bookingId = booking.id,
-                )
-            )
+            val game = NonConferenceGame(bookingId = booking.id)
+            gameInput.assignedPacket?.id?.let { assignedPacketId ->
+                if (user.isAdmin()) {
+                    val packet = packetRepo.findByIdOrNull(assignedPacketId) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid packet")
+                    game.assignedPacket = packet
+                }
+            }
+
+            val savedGame = repo.save(game)
 
             for (school in schools) {
                 nonConferenceGameSchoolRepo.save(
                     NonConferenceGameSchool(
-                        nonConferenceGame = game,
+                        nonConferenceGame = savedGame,
                         school = school,
                     )
                 )
