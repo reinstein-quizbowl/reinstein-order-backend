@@ -186,7 +186,9 @@ create or replace view packet_exposure as (
             join non_conference_game g on gs.non_conference_game_id = g.id
             join booking b on g.booking_id = b.id
             join booking_status s on b.booking_status_code = s.code
-        where (s.tentative_packet_exposure = true or s.confirmed_packet_exposure = true)
+        where
+            (s.tentative_packet_exposure = true or s.confirmed_packet_exposure = true) and
+            g.assigned_packet_id is not null
 
         union all
 
