@@ -80,6 +80,7 @@ class BookingController {
         entity.emailAddress = input.emailAddress ?: entity.emailAddress
         entity.authority = input.authority ?: entity.authority
         entity.requestsW9 = input.requestsW9 ?: entity.requestsW9 ?: false
+        // We could update invoiceAlteredManually here, but it doesn't seem right; the invoice-affecting endpoints can set that
         entity.externalNote = input.externalNote ?: entity.externalNote
 
         if (user.isAdmin()) {

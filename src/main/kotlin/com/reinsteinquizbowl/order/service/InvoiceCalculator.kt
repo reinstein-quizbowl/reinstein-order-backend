@@ -217,11 +217,15 @@ class InvoiceCalculator {
         lines.forEach { it.bookingId = booking.id!! }
         invoiceLineRepo.saveAll(lines)
 
+        booking.invoiceAlteredManually = false
+
         repo.save(booking)
     }
 
     fun clear(booking: Booking) {
         val lines = invoiceLineRepo.findByBookingId(booking.id!!)
         invoiceLineRepo.deleteAll(lines)
+
+        booking.invoiceAlteredManually = false
     }
 }

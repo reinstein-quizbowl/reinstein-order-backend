@@ -16,6 +16,7 @@ data class ApiBooking(
     var shipDate: LocalDate? = null,
     var paymentReceivedDate: LocalDate? = null,
     var requestsW9: Boolean? = null,
+    var invoiceAlteredManually: Boolean? = null,
     var externalNote: String? = null,
     var internalNote: String? = null,
 

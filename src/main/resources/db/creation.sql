@@ -77,6 +77,7 @@ create table booking (
     ship_date date null,
     payment_received_date date null,
     requests_w9 boolean not null default false,
+    invoice_altered_manually boolean not null default false,
     external_note text null,
     internal_note text null,
     created_at timestamp not null default now(),

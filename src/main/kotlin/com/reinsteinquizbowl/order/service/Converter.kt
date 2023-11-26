@@ -68,6 +68,7 @@ class Converter {
             shipDate = entity.shipDate,
             paymentReceivedDate = entity.paymentReceivedDate,
             requestsW9 = entity.requestsW9,
+            invoiceAlteredManually = entity.invoiceAlteredManually,
             externalNote = entity.externalNote,
             internalNote = entity.internalNote, // THINK: how can we limit exposure to this?
             conference = bookingConferenceRepo.findByBookingId(entity.id!!)?.let { toApi(it) },
