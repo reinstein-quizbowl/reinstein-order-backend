@@ -53,6 +53,9 @@ class InvoiceLineController {
     fun addLine(@PathVariable bookingCreationId: String, @RequestBody input: ApiInvoiceLine): ApiBooking {
         val booking = bookingService.findThenAuthorize(bookingCreationId)
 
+        val sequence: Long = input.sequence
+            ?: ((repo.findByBookingId(booking.id!!).mapNotNull(InvoiceLine::sequence).maxOrNull() ?: 0) + 1)
+
         repo.save(
             InvoiceLine(
                 bookingId = booking.id,
@@ -61,7 +64,7 @@ class InvoiceLineController {
                 label = input.label,
                 quantity = input.quantity,
                 unitCost = input.unitCost,
-                sequence = input.sequence,
+                sequence = sequence,
             )
         )
 
