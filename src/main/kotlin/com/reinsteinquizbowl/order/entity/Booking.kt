@@ -23,7 +23,7 @@ data class Booking(
     var shipDate: LocalDate? = null,
     var paymentReceivedDate: LocalDate? = null,
     @Column(name = "requests_w9") var requestsW9: Boolean? = null,
-    var invoiceAlteredManually: Boolean? = null,
+    var invoiceAlteredManually: Boolean = false,
     var externalNote: String? = null,
     var internalNote: String? = null,
     @CreationTimestamp var createdAt: OffsetDateTime? = null,
