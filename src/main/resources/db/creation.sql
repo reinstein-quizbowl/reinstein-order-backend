@@ -69,7 +69,7 @@ create table booking_status (
 -- I wanted to call this `order`, but that's a SQL reserved word
 create table booking (
     id serial primary key,
-    school_id int null references school,
+    school_id int not null references school,
     name text not null,
     email_address text not null,
     authority text null,

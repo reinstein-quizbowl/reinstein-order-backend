@@ -40,18 +40,12 @@ class InvoiceCalculator {
     @Autowired private lateinit var invoiceLineRepo: InvoiceLineRepository
 
     fun determineInvoiceLabel(booking: Booking): String {
-        val schoolId = booking.school?.id
+        val schoolId = booking.school!!.id!!
 
-        val bookingsWithLowerId = if (schoolId == null) {
-            repo.countLowerIdBookingsForNoSchool(booking.id!!)
-        } else {
-            repo.countLowerIdBookingsForSchoolId(schoolId, booking.id!!)
-        }
+        val bookingsWithLowerId = repo.countLowerIdBookingsForSchoolId(schoolId, booking.id!!)
         val thisBookingSequence = bookingsWithLowerId + 1
 
-        val displayableSchoolId = schoolId?.toString() ?: "X"
-
-        return "$displayableSchoolId-$thisBookingSequence"
+        return "$schoolId-$thisBookingSequence"
     }
 
     // This logic is described in the UI, so when updating it, it should be updated in both places.

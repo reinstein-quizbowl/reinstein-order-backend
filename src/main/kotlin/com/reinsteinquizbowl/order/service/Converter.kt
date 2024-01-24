@@ -58,7 +58,7 @@ class Converter {
 
         return ApiBooking(
             id = entity.id,
-            school = entity.school?.let { toApi(it) },
+            school = toApi(entity.school!!),
             name = entity.name,
             emailAddress = entity.emailAddress,
             authority = entity.authority,
