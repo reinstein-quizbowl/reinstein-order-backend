@@ -1,4 +1,5 @@
 insert into school (name, short_name, address, city, state, postal_code, country, latitude, longitude, active, coop, iesa_id) values
+('Illinois Elementary School Association', 'IESA', '1015 Maple Hill Rd', 'Bloomington', 'IL', '61705', 'USA', 40.489000, -89.029930, false, false, null), -- inactive so that it doesn't show up as a possible opponent
 ('A. Vito Martinez Middle School', 'Romeoville Martinez', '590 Belmont Dr', 'Romeoville', 'IL', '60446', 'USA', 41.640412, -88.099722, true, false, '501'),
 ('Abingdon-Avon Middle School', 'Avon Abingdon Avon', '320 E Woods St', 'Avon', 'IL', '61415', 'USA', 40.664358, -90.431048, true, false, '2175'),
 ('Abraham Lincoln Middle School', 'Rockford Lincoln', '1500 Charles St', 'Rockford', 'IL', '61104', 'USA', 42.264456, -89.070428, true, false, '2146'),
