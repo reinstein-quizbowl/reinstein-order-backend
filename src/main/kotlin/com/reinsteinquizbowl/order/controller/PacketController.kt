@@ -40,6 +40,7 @@ class PacketController {
         when (filter) {
             "availableForPractice" -> packets = packets.filter { it.isAvailableAsPracticeMaterial() }
             "availableForCompetition" -> packets = packets.filter { it.availableForCompetition == true }
+            "all" -> {}
         }
 
         return packets
