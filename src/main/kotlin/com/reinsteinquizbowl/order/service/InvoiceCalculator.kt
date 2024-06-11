@@ -52,8 +52,7 @@ class InvoiceCalculator {
     @Suppress("MagicNumber")
     private fun calculateCostForPacket(schoolsExposed: Long): BigDecimal = when (schoolsExposed) {
         0L -> BigDecimal("0.00")
-        1L, 2L, 3L -> BigDecimal("15.00")
-        4L -> BigDecimal("20.00")
+        1L, 2L, 3L, 4L -> BigDecimal("20.00")
         5L -> BigDecimal("25.00")
         else -> BigDecimal("30.00")
     }
