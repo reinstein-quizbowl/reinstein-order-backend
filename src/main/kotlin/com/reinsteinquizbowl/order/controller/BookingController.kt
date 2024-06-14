@@ -8,6 +8,7 @@ import com.reinsteinquizbowl.order.repository.BookingRepository
 import com.reinsteinquizbowl.order.repository.BookingStatusRepository
 import com.reinsteinquizbowl.order.repository.NonConferenceGameRepository
 import com.reinsteinquizbowl.order.repository.SchoolRepository
+import com.reinsteinquizbowl.order.repository.YearRepository
 import com.reinsteinquizbowl.order.service.BookingConferenceService
 import com.reinsteinquizbowl.order.service.BookingService
 import com.reinsteinquizbowl.order.service.Converter
@@ -41,6 +42,7 @@ class BookingController {
     @Autowired private lateinit var nonConferenceGameRepo: NonConferenceGameRepository
     @Autowired private lateinit var schoolRepo: SchoolRepository
     @Autowired private lateinit var statusRepo: BookingStatusRepository
+    @Autowired private lateinit var yearRepo: YearRepository
     @Autowired private lateinit var service: BookingService
     @Autowired private lateinit var conferenceService: BookingConferenceService
     @Autowired private lateinit var nonConferenceGameService: NonConferenceGameService
@@ -54,8 +56,21 @@ class BookingController {
 
     @GetMapping("/bookings")
     @PreAuthorize("hasAuthority('admin')")
-    fun getByStatus(@RequestParam(name = "statusCode") statusCodes: List<String>): List<ApiBooking> {
-        return repo.findByStatusCodeIn(statusCodes).map(convert::toApi)
+    fun searchByStatusAndOptionalYear(
+        @RequestParam(name = "statusCode") statusCodes: List<String>,
+        @RequestParam yearCode: String? = null,
+    ): List<ApiBooking> {
+        val results = if (yearCode.isNullOrBlank()) {
+            repo.findByStatusCodeIn(statusCodes)
+        } else {
+            val year = yearRepo.findByIdOrNull(yearCode) ?: throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid year code: $yearCode")
+            val start = year.startDate!!.atStartOfDay(Util.CANONICAL_TIME_ZONE).toOffsetDateTime()
+            val end = year.endDate!!.atStartOfDay(Util.CANONICAL_TIME_ZONE).toOffsetDateTime()
+
+            repo.findByStatusCodeInAndCreatedAtGreaterThanEqualAndCreatedAtLessThan(statusCodes, start, end)
+        }
+
+        return results.map(convert::toApi)
     }
 
     @GetMapping("/bookings/{creationId}")
