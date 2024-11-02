@@ -291,6 +291,7 @@ insert into school (name, short_name, address, city, state, postal_code, country
 ('Heritage Junior High and Elementary School', 'Homer Heritage', '512 W 1st St', 'Homer', 'IL', '61849', 'USA', 40.036292, -87.964375, true, false, '241'),
 ('Heritage Middle School', 'Lansing Heritage', '19250 Burnham Ave', 'Lansing', 'IL', '60438', 'USA', 41.545762, -87.539357, true, false, '290'),
 ('Heritage Middle School', 'Summit Heritage', '6021 S 74th Ave', 'Summit', 'IL', '60501', 'USA', 41.782835, -87.805793, true, false, '553'),
+('Herrick Middle School', 'Downers Grove Herrick', '4435 Middaugh Ave', 'Downers Grove', 'IL', '60515', 'USA', 41.807000, -88.015130, true, false, '2552'),
 ('Hester Junior High School', 'Franklin Park Hester', '2836 Gustav St', 'Franklin Park', 'IL', '60131', 'USA', 41.93065, -87.866598, true, false, '2282'),
 ('Heyworth Junior-Senior High School', 'Heyworth', '308 W Cleveland St', 'Heyworth', 'IL', '61745', 'USA', 40.311784, -88.980214, true, false, '236'),
 ('Hickory Creek Middle School', 'Frankfort Hickory Creek', '22150 S Owens Rd', 'Frankfort', 'IL', '60423', 'USA', 41.491711, -87.89788, true, false, '196'),
@@ -327,7 +328,7 @@ insert into school (name, short_name, address, city, state, postal_code, country
 ('Immaculate Conception School', 'Columbia ICS', '409 Palmer Rd', 'Columbia', 'IL', '62236', 'USA', 38.442501, -90.19608, true, false, '759'),
 ('Immaculate Conception School', 'Monmouth ICS', '115 N B St', 'Monmouth', 'IL', '61462', 'USA', 40.912313, -90.650689, true, false, '918'),
 ('Immaculate Conception School', 'Morris ICS', '505 E North St', 'Morris', 'IL', '60450', 'USA', 41.360991, -88.418972, true, false, '375'),
-('Immaculate Conception St. Joseph School', 'Chicago ICSJ', '363 W Hill St', 'Chicago', 'IL', '60610', 'USA', 41.901730, -87.638600, true, false, '2430')
+('Immaculate Conception St. Joseph School', 'Chicago ICSJ', '363 W Hill St', 'Chicago', 'IL', '60610', 'USA', 41.901730, -87.638600, true, false, '2430'),
 ('Indian Creek Middle School', 'Waterman Indian Creek', '335 E Garfield St', 'Waterman', 'IL', '60556', 'USA', 41.764747, -88.77398, true, false, '590'),
 ('Ingersoll Middle School', 'Canton Ingersoll', '1605 E Ash St', 'Canton', 'IL', '61520', 'USA', 40.560909, -90.007775, true, false, '89'),
 ('International Prep Academy', 'Champaign International', '1605 W Kirby Ave', 'Champaign', 'IL', '61821', 'USA', 40.097740, -88.273180, true, false, '2496'),
@@ -626,7 +627,7 @@ insert into school (name, short_name, address, city, state, postal_code, country
 ('Rockford Christian Schools', 'Rockford Christian', '1401 N Bell School Rd', 'Rockford', 'IL', '61107', 'USA', 42.285539, -88.970154, true, false, '821'),
 ('Rockford Environmental Science Academy', 'Rockford RESA', '1800 Ogilby Rd', 'Rockford', 'IL', '61102', 'USA', 42.248658, -89.124929, true, false, '2147'),
 ('Rockford Lutheran School', 'Rockford Lutheran', '3411 N Alpine Rd', 'Rockford', 'IL', '61114', 'USA', 42.308755, -89.02896, true, false, '1828'),
-('Rockridge Junior High School', 'Taylor Ridge Rockridge', '14110 134th Ave W', 'Taylor Ridge', 'IL', '61284', 'USA', 41.386726, -90.657446, true, false, '557');
+('Rockridge Junior High School', 'Taylor Ridge Rockridge', '14110 134th Ave W', 'Taylor Ridge', 'IL', '61284', 'USA', 41.386726, -90.657446, true, false, '557'),
 ('Roosevelt Junior High School', 'Dolton Roosevelt', '111 W 146th St', 'Dolton', 'IL', '60419', 'USA', 41.6297, -87.624787, true, false, '1115'),
 ('Roosevelt Magnet School', 'Peoria Roosevelt', '1704 W Aiken Ave', 'Peoria', 'IL', '61605', 'USA', 40.688511, -89.619613, true, false, '909'),
 ('Roosevelt Middle School', 'Bellwood Roosevelt', '2500 Oak St', 'Bellwood', 'IL', '60104', 'USA', 41.88557, -87.863995, true, false, '1015'),
@@ -929,6 +930,7 @@ insert into school (name, short_name, address, city, state, postal_code, country
 
 -- The next section is schools that are not Illinois middle schools but have placed orders (or conceivably have some other reason to be in the database).
 ('West Chester East High School', 'West Chester East', '450 Ellis Ln', 'West Chester', 'PA', '19380', 'USA', 39.979130, -75.563940, false, false, null),
+(' Cattaraugus-Little Valley Middle School', ' Cattaraugus-Little Valley', '25 N Franklin St', 'Cattaraugus', 'NY', '14719', 'USA', 42.334880, -78.859150, false, false, null),
 
 -- The next section is non-school organizations set to inactive so they don't show up as possible opponents. They need to exist for invoicing reasons.
 ('Illinois Elementary School Association', 'IESA', '1015 Maple Hill Rd', 'Bloomington', 'IL', '61705', 'USA', 40.489000, -89.029930, false, false, null),
