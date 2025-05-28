@@ -1,6 +1,6 @@
 package com.reinsteinquizbowl.order.controller
 
-import com.reinsteinquizbowl.order.adapter.SendgridAdapter
+import com.reinsteinquizbowl.order.adapter.EmailAdapter
 import com.reinsteinquizbowl.order.api.ApiBooking
 import com.reinsteinquizbowl.order.entity.Booking
 import com.reinsteinquizbowl.order.repository.BookingConferenceRepository
@@ -49,7 +49,7 @@ class BookingController {
     @Autowired private lateinit var practiceMaterialService: PracticeMaterialService
     @Autowired private lateinit var invoice: InvoiceCalculator
     @Autowired private lateinit var user: UserService
-    @Autowired private lateinit var sendgrid: SendgridAdapter
+    @Autowired private lateinit var email: EmailAdapter
     @Autowired private lateinit var convert: Converter
 
     private val logger = LoggerFactory.getLogger(BookingController::class.java)
@@ -176,10 +176,10 @@ class BookingController {
 
         @Suppress("TooGenericExceptionCaught")
         try {
-            sendgrid.sendHtmlEmail(
+            email.sendHtmlEmail(
                 from = Config.FROM_ADDRESS,
                 to = to,
-                cc = listOfNotNull(cc),
+                ccs = listOfNotNull(cc),
                 subject = "Order from ${booking.name} (${booking.school!!.shortName})",
                 bodyHtml = body,
             )
@@ -202,10 +202,10 @@ class BookingController {
 
         @Suppress("TooGenericExceptionCaught")
         try {
-            sendgrid.sendHtmlEmail(
+            email.sendHtmlEmail(
                 from = Config.FROM_ADDRESS,
                 to = EmailAddress(address = booking.emailAddress!!, description = booking.name),
-                cc = listOfNotNull(internalRecipient, cc),
+                ccs = listOfNotNull(internalRecipient, cc),
                 subject = "Your Order with Reinstein QuizBowl",
                 bodyHtml = internalConfirmationBody,
             )

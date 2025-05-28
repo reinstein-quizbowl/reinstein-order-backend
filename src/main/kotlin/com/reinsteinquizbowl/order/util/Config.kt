@@ -12,8 +12,11 @@ object Config {
     private val DB_PASSWORD = System.getenv("REINSTEIN_DB_PASSWORD")
     private val JWT_SECRET = System.getenv("REINSTEIN_JWT_SECRET")
 
-    val SENDGRID_API_KEY = System.getenv("REINSTEIN_SENDGRID_API_KEY")
-    val UI_PREFIX = System.getenv("REINSTEIN_QUIZBOWL_UI_PREFIX")
+    val SMTP_SERVER: String = System.getenv("REINSTEIN_SMTP_SERVER")
+    val SMTP_USERNAME: String = System.getenv("REINSTEIN_SMTP_USERNAME")
+    val SMTP_PASSWORD: String = System.getenv("REINSTEIN_SMTP_PASSWORD")
+    const val SMTP_PORT = 465
+    val UI_PREFIX: String = System.getenv("REINSTEIN_QUIZBOWL_UI_PREFIX")
 
     val SUBMISSION_EMAIL_TO = System.getenv("REINSTEIN_SUBMISSION_EMAIL_TO")
     val SUBMISSION_EMAIL_TO_DESCRIPTION = System.getenv("REINSTEIN_SUBMISSION_EMAIL_TO_DESCRIPTION")
