@@ -5,7 +5,7 @@ It's the back end to the [ordering interface](https://github.com/jonahgreenthal/
 The production instance is running at `order-api.reinsteinquizbowl.com`.
 
 # Running
-Several environment variables are required to run this app. They are documented in `src/main/kotlin/com/reinsteinquizbowl/order/util/Config.kt`. They define the port the server runs on, database credentials, credentials for other external services (currently just Sendgrid), and more.
+Several environment variables are required to run this app. They are documented in `src/main/kotlin/com/reinsteinquizbowl/order/util/Config.kt`. They define the port the server runs on, database credentials, credentials for other external services (currently just email), and more.
 
 In development, the app can be run using `./gradlew bootRun`.
 
